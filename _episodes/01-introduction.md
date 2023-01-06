@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "1 - Introduction"
 teaching: 0
 exercises: 0
 questions:
@@ -13,11 +13,11 @@ keypoints:
 - "MadGraph is a widely used tool to generate matrix-element predictions for the hard scatter for SM and BSM processes."
 ---
 
-# What's the fuzz about Monte Carlo?
+# Introduction and first steps
 
-Samples of simulated events are essential in high energy physics
-Processes at vastly different energy regimes are involved, from hard scattering to parton showering
-Luckily, this factorizes!
+Samples of simulated events originating from certain processes are essential in high energy physics.
+Processes at vastly different energy regimes are involved, from the hard scattering process to hadronization and parton showering.
+Luckily, these different processes factorize!
 Although the hard and soft process are distinct, they are connected by an evolutionary Markov process that leads to parton showering.
 The partons produced in this process eventually participate in the hadron formation (hadronization) where color singlet states are formed.
 Monte Carlo techniques can be used for simulating the Markov process, efficient integration of the high dimensional hard scatter problem, and the hadronization models.
@@ -55,7 +55,13 @@ output wplustest_4f_LO -nojpeg
 ~~~
 {: .output}
 
-FIXME: briefly explain commands.
+The two most important lines of this block are the model import (`import model sm-ckm`) and the instructions on the process to generate (`generate p p > w+, w+ > ell+ vl`).
+Within the MG directory you can find a directory `models`, that contains different pre-installed models.
+The most obvious one that we are using in the example is `sm` - the standard model at leading order in perturbative QCD.
+Model parameters can be configured through ''restriction cards'', in this example `restrict_ckm.dat` loaded through the syntax `sm-ckm`.
+This specific restriction card uses a non-diagonal [CKM matrix](https://en.wikipedia.org/wiki/Cabibbo–Kobayashi–Maskawa_matrix) (diagonal CKM is the default otherwise for simplification and faster running).
+One great feature of MadGraph is it's flexibility in terms of physics models to use.
+To generate a sample using a new physics model one can use the UFO interface. A database of models can be found in the [feynrules model database](http://feynrules.irmp.ucl.ac.be/wiki/ModelDatabaseMainPage).
 
 The practically most relevant part is that MG figures out all relevant Feynman diagrams contributing to a process.
 If you are trying to set up a new MC sample, looking at these Feynman diagrams is a great way to check that you actually get the physics you want.
@@ -110,11 +116,17 @@ What is the cross section determined by Madgraph?
 > {: .solution}
 {: .challenge}
 
-LHE output
+The main output that MG produces is called ''LHE file''.
+The LHE file (Les Houches Event file) is a standard file format that stores process and event information from parton-level event generators.
+The documentation can be found [here](https://arxiv.org/pdf/hep-ph/0609017.pdf).
 
-> ## Looking at the output
->
-> > ## Solution
+In general, the LHE file contains a header with description of the settings of the generator (e.g. process and run information),
+and multiple event blocks (one for each event).
+The LHE file is plain text, so it's usually a good idea to use some compression algorithm to save space - MG zips the output by default.
+
+> ## Looking at the LHE output
+> Find the LHE file produced by MG and find the first event block.
+> > ## Example solution
 > > 
 > > ~~~bash
 > > find -name '*.lhe.gz'
@@ -126,46 +138,126 @@ LHE output
 > > ~~~
 > > <LesHouchesEvents version="3.0">
 > > <header>
-> > <!--
-> > #*********************************************************************
-> > #                                                                    *
-> > #                        MadGraph5_aMC@NLO                           *
-> > #                                                                    *
-> > #                           Going Beyond                             *
-> > #                                                                    *
-> > #                   http://madgraph.hep.uiuc.edu                     *
-> > #                   http://madgraph.phys.ucl.ac.be                   *
-> > #                   http://amcatnlo.cern.ch                          *
-> > #                                                                    *
-> > #                     The MadGraph5_aMC@NLO team                     *
-> > #                                                                    *
-> > #....................................................................*
-> > #                                                                    *
-> > # This file contains all the information necessary to reproduce      *
-> > # the events generated:                                              *
-> > #                                                                    *
-> > # 1. software version                                                *
-> > # 2. proc_card          : code generation info including model       *
-> > # 3. param_card         : model primary parameters in the LH format  *
-> > # 4. run_card           : running parameters (collider and cuts)     *
-> > # 5. pythia_card        : present only if pythia has been run        *
-> > # 6. pgs_card           : present only if pgs has been run           *
-> > # 7. delphes_cards      : present only if delphes has been run       *
-> > #                                                                    *
-> > #                                                                    *
-> > #*********************************************************************
+> > ...
+> > </header>
+> > ...
+> > <event>
+> >  5      0 +2.7145900e+04 7.93095700e+01 7.54677100e-03 1.33102200e-01
+> >         2 -1    0    0  501    0 +0.0000000000e+00 +0.0000000000e+00 +4.5829549845e+01 4.5829549845e+01 0.0000000000e+00 0.0000e+00 -1.0000e+00
+> >        -1 -1    0    0    0  501 -0.0000000000e+00 -0.0000000000e+00 -3.4311969734e+01 3.4311969734e+01 0.0000000000e+00 0.0000e+00 1.0000e+00
+> >        24  2    1    2    0    0 +0.0000000000e+00 +0.0000000000e+00 +1.1517580112e+01 8.0141519579e+01 7.9309573878e+01 0.0000e+00 0.0000e+00
+> >       -13  1    3    3    0    0 -1.6845086581e+01 +2.2368564620e+01 -2.2614075432e+01 3.5993138689e+01 0.0000000000e+00 0.0000e+00 1.0000e+00
+> >        14  1    3    3    0    0 +1.6845086581e+01 -2.2368564620e+01 +3.4131655543e+01 4.4148380890e+01 0.0000000000e+00 0.0000e+00 -1.0000e+00
+> > <mgrwt>
+> > <rscale>  0 0.79309574E+02</rscale>
+> > <asrwt>0</asrwt>
+> > <pdfrwt beam="1">  1        2 0.70507000E-02 0.79309574E+02</pdfrwt>
+> > <pdfrwt beam="2">  1       -1 0.52787646E-02 0.79309574E+02</pdfrwt>
+> > <totfact> 0.15019241E+05</totfact>
+> > </mgrwt>
+> > <rwgt>
+> > <wgt id='1'> +2.3707085e+04 </wgt>
+> > ...
+> > </rwgt>
+> > </event>
 > > ~~~
 > > {: .output}
 > {: .solution}
 {: .challenge}
 
+
+
+> ## Bonus: Obtaining the cross section of W boson production
+>
+> The exercise above only contained W+ bosons (only positive charge).
+> Add production of the negatively charged W bosons and calculate the cross section.
+> Before running MG, think about what result you would expect, i.e. by how much do you think the cross section should increase.
+> Compare the results of W+ and W+/-. What do you conclude?
+>
+> > ## Solution
+> >
+> > ~~~bash
+> > import model sm-ckm
+> > 
+> > define ell+ = e+ mu+ ta+
+> > define ell- = e- mu- ta-
+> > generate p p > w+, w+ > ell+ vl @0
+> > add process p p > w-, w- > ell- vl~ @1
+> > 
+> > output wtest_4f_LO -nojpeg
+> > launch 
+> > ~~~
+> > {: .source}
+> >
+> > When prompted about the run_card, use `${CDGPATH}/gen-cmsdas-2022/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat` again.
+> > ~~~
+> >   === Results Summary for run: run_01 tag: tag_1 ===
+> > 
+> >      Cross-section :   4.732e+04 +- 57.08 pb
+> >      Nb of events :  10000
+> > ~~~
+> > {: .output}
+> > The cross section calculated by MG is `4.732e+04 +- 57.08 pb`.
+> > While one would naiively expect the cross section to double by including W- bosons we only get a cross section that is ~40% larger.
+> > The simplified explanation is that the initial state protons contain more up valence quarks than down valence quarks.
+> {: .solution}
+{: .challenge}
+
+
 ## Using the gridpack workflow
 
-As mentioned previously, interactive running of MG5 is useful for exercises and smaller tests, but ultimately not practical for large-scale production.
-To avoid having to use the interactive mode, one can use gridpacks instead. A gridpack is simply an archive file that contains all the executable MG5 code needed to produce LHE events for a given process.
+As mentioned previously, interactive running of MG5 is useful for developments and quick tests, but ultimately not practical for large-scale production.
+To avoid having to use the interactive mode, one can make use the card structure of MG.
+A fully automated workflow for running MG and producing gridpacks is maintained in the [genproductions repository](https://github.com/cms-sw/genproductions).
+A gridpack is simply an archive file that contains all the executable MG5 code needed to produce LHE events for a given process, which can then be executed easily on many different grid workers (hence the name).
 It has the advantage that once it is created, it is a one-button program to generate events, no thinking required.
 In this part of the exercise, we will use the same input cards as before to create a gridpack, run it, and compare the results to before.
 
+Gridpacks are generated using the gridpack_generation script, which we will run in local mode, i.e. on the machine we are currently logged in to.
+Note that scripts are provided to run the gridpacks on other computing infrastructures such as the CERN batch system and CMSConnect, which is useful for more complicated processes.
+
+To create a gridpack, we simply call gridpack_generation.sh and pass the process name and card location to it.
+
+> ## Setting and unsetting the CMSSW environment
+> You should not have activated a CMSSW environment in this exercise so far.
+> However, if you did so before, you need to unset it in order to not interfere with the genproductions script.
+> Run `FIXME` to deactivate your CMSSW environment.
+{: .callout}
+
+We will be generating a gridpack with cards similar to the commands we've used in the standalone example above.
+The cards are located in the MG section of the genproductions directory
+
+~~~bash
+cd $CDGPATH/genproductions_mg265/bin/MadGraph5_aMCatNLO
+time ./gridpack_generation.sh wplustest_4f_LO cards/examples/wplustest_4f_LO local
+~~~
+{: .source}
+
+> ## Naming conventions
+> There are certain naming conventions for the input cards.
+> For a given process name $NAME, the input cards must be named as $NAME_run_card.dat, $NAME_proc_card.dat, etc...
+{: .callout}
+
+The cards for Run2 UL samples that were generated with MG can be found in `bin/MadGraph5_aMCatNLO/cards/production/2017/13TeV/` of the [genproductions repo](https://github.com/cms-sw/genproductions/tree/master/bin/MadGraph5_aMCatNLO/cards/production/2017/13TeV).
+
+
+~~~bash
+mkdir work
+cd work
+tar xf ../wplustest_4f_LO_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz
+
+NEVENTS=10000
+RANDOMSEED=12345
+NCPU=1
+./runcmsgrid.sh $NEVENTS $RANDOMSEED $NCPU
+~~~
+{: .source}
+
+This will produce an output LHE file called `cmsgrid_final.lhe`.
+
+## Comparing the LHE output
+
+MadAnalysis install for MG 2.6.5 seems to fail?!
 
 
 {% include links.md %}
