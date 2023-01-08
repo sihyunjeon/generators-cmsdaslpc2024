@@ -1,7 +1,7 @@
 ---
 title: "1 - Introduction"
-teaching: 0
-exercises: 0
+teaching: 15
+exercises: 30
 questions:
 - "What are Monte Carlo Generators?"
 - "Why are we using simulated samples in CMS?"

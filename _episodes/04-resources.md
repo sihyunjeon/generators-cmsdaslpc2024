@@ -1,7 +1,7 @@
 ---
 title: "4 - CMS resources for samples and generators"
-teaching: 0
-exercises: 0
+teaching: 5
+exercises: 10
 questions:
 - "How do I find centrally produced samples and their status?"
 - "How do I obtain a cross section to normalize my sample?"

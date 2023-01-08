@@ -1,7 +1,7 @@
 ---
 title: "2 - Particle Level"
-teaching: 0
-exercises: 0
+teaching: 10
+exercises: 20
 questions:
 - "Why do we need to do parton showering?"
 - "How are simulated samples created in CMS?"

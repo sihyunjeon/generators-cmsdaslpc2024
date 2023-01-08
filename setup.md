@@ -50,6 +50,11 @@ total 20
 ~~~
 {: .output}
 
-FIXME
+Cloning extra scripts and config files
+~~~bash
+git clone https://github.com/danbarto/gen-cmsdas-2023.git
+~~~
+{: .source}
+
 
 {% include links.md %}

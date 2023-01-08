@@ -1,7 +1,7 @@
 ---
 title: "3 - Analysis and systematic uncertainties"
-teaching: 0
-exercises: 0
+teaching: 10
+exercises: 20
 questions:
 - "How can we use generator information for quick studies?"
 - "What are systematic uncertainties coming from theory inputs?"
