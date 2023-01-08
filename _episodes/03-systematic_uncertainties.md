@@ -65,3 +65,4 @@ python3 analyis/plot_mt.py --input INPUTFILE.root
 where you can replace `INPUTFILE.root` with the path to your NanoGEN.root file, or use `/FIXME/NanoGEN.root` which is a slightly larger file to produce smoother distributions.
 In order to produce the MT histogram we reweight the sample to an integrated luminosity corresponding to the 2018 data taking (60/fb).
 The different scale and PDF weights are contained in branch
+

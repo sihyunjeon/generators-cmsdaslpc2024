@@ -7,10 +7,13 @@ questions:
 - "Why are we using simulated samples in CMS?"
 - "How are simulated samples created in CMS?"
 objectives:
-- "Use the MadGraph generator in standalone mode"
-- "Analyse LHE files"
+- "Use the MadGraph generator in standalone mode and get familiar with the basic syntax"
+- "Analyse the produced LHE files"
 keypoints:
 - "MadGraph is a widely used tool to generate matrix-element predictions for the hard scatter for SM and BSM processes."
+- "MadGraph can be used interactively, or steered using text-based cards"
+- "Gridpacks are used for large scale productions"
+- "MadAnalysis is a tool that allows for quick checks of distributions"
 ---
 
 # Introduction and first steps
@@ -165,7 +168,16 @@ The LHE file is plain text, so it's usually a good idea to use some compression 
 > {: .solution}
 {: .challenge}
 
-
+> ## MadGraph syntax
+> If you want to add another process, e.g. production of W- in the above example, you can add another process with `add process p p > w-, w- > ell- vl~`
+> A detailed introduction to the syntax is given in [this documentation](https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/InputEx).
+> Some very basic things to keep in mind:
+> `generate p p > e+ e-` will generate any diagram that is compatible with the used model that produces an electron / positron pair
+> `generate p p > e+ e- / Z` will exclude diagrams that contain a Z boson as internal paricle
+> `generate p p > e+ e- $ Z` will exclude the Z boson from appearing in the s-channel (careful about gauge invariance)
+> `generate p p > Z > e+ e-` will always include a Z boson in the s-channel (careful about gauge invariance)
+> `generate p p > w+ QED=3` will include all QED contributions, otherwise the QED order is always set to its minimal value
+{: .callout}
 
 > ## Bonus: Obtaining the cross section of W boson production
 >
@@ -221,7 +233,11 @@ To create a gridpack, we simply call gridpack_generation.sh and pass the process
 > ## Setting and unsetting the CMSSW environment
 > You should not have activated a CMSSW environment in this exercise so far.
 > However, if you did so before, you need to unset it in order to not interfere with the genproductions script.
-> Run `FIXME` to deactivate your CMSSW environment.
+> You can run the following command to unset the CMSSW environment, or log in to a clean new session.
+> ~~~bash
+> eval `scram unsetenv -sh`
+> ~~~
+> {: .source}
 {: .callout}
 
 We will be generating a gridpack with cards similar to the commands we've used in the standalone example above.
@@ -257,8 +273,67 @@ This will produce an output LHE file called `cmsgrid_final.lhe`.
 
 ## Comparing the LHE output
 
-MadAnalysis install for MG 2.6.5 seems to fail?!
+There are multiple ways of analyzing an LHE file, each of which has its own advantages and disadvantages.
+For the purpose of this exercise, we will use the most straightforward tool: MadAnalysis (MA).
+MA is a tool designed to be used by theorists to analyze parton-level LHE files, particle-level HEPMC files or even events with DELPHES detector simulation.
+We can install MA directly from the MG5 console.
 
+~~~bash
+cd $CDGPATH/MG5_aMC_v2_6_5/
+./bin/mg5_aMC
+
+~~~
+{: .source}
+
+You can then install MA from within MG
+~~~
+install MadAnalysis5 --madanalysis5_tarball=/eos/uscms/store/user/cmsdas/2023/short_exercises/Generators/ma5_v1.9.13.tgz
+~~~
+{: .source}
+
+> ## MadAnalysis mirror
+> You might realize that we're installing MA from a local copy (`/eos/uscms/store/user/cmsdas/2023/short_exercises/Generators/ma5_v1.9.13.tgz`).
+> We've experienced some issues with using a [direct download](https://madanalysis.irmp.ucl.ac.be/raw-attachment/wiki/MA5SandBox/ma5_v1.9.13.tgz),
+> therefore, we've prepared the local copy.
+{: .callout}
+
+After finishing the installation quit MG and run MadAnalysis
+~~~bash
+cd ../CMSSW_12_4_7/src;cmsenv;cd -
+./HEPTools/madanalysis5/madanalysis5/bin/ma5
+~~~
+{: .source}
+Select 2 cores for compiling (remember that you're on a shared computing node!) - this only needs to be done once.
+LHE files can be imported as different datasets:
+~~~
+import wplustest_4f_LO/Events/run_01/unweighted_events.lhe as STANDALONE
+import ../genproductions_mg265/bin/MadGraph5_aMCatNLO/work/cmsgrid_final.lhe as GRIDPACK
+~~~
+{: .source}
+
+Now we can use simple syntax to define the distributions we would like to look at and start the analysis.
+~~~
+plot PT(mu+) 20 0 100
+plot PT(mu-) 20 0 100
+plot PT(l+) 20 0 100
+plot PT(mu+ vm) 20 0 100
+plot M(mu+ vm) 40 40 120
+plot M(e+ ve) 40 40 120
+plot M(ta+ vt) 40 40 120
+plot M(l+ vl) 40 40 120
+
+set main.stacking_method = superimpose
+submit
+~~~
+{: .source}
+
+As you can see from the terminal output, MadAnalysis translates the plotting commands into a C++ analyzer and compiles it. If you want to do some analysis steps that are not supported in the simple command-line syntax we used here, you can also write a C++ analyzer directly (MA calls this "expert mode"). This takes a little more time but gives you much greater flexibility.
+The analysis output can be viewed as HTML. Since there is no web browser on cmslpc-sl7, let's copy ANALYSIS_0/Output/ to a local machine and open the HTML output:
+
+firefox ANALYSIS_0/Output/HTML/MadAnalysis5job_0/index.html
+
+What observations do you make? Are the two datasets consistent? What are the shapes of the lepton pT distributions? What is the shape of the pT distribution of the W system? Are these shapes physical?
+Feel free to experiment here and plot other quantities you find interesting. You can refer to the [user manual](https://arxiv.org/pdf/1206.1599.pdf) to learn about the syntax.
 
 {% include links.md %}
 
