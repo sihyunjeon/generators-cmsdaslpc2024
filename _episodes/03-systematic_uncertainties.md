@@ -24,7 +24,7 @@ You can open the file in root to explore the content, e.g.
 
 ~~~bash
 cd $CDGPATH/CMSSW_12_4_7/src; cmsenv
-root -l $CDGPATH/CMSSW_10_6_9/src/NanoGEN.root
+root -l $CDGPATH/CMSSW_10_6_19/src/NanoGEN.root
 ~~~
 {: .source}
 
@@ -68,10 +68,10 @@ It can be run after setting the proper CMSSW environment to load all the necessa
 ~~~bash
 cd $CDGPATH/CMSSW_12_4_7/src; cmsenv
 cd $CDGPATH/gen-cmsdas-2023/
-python3 analyis/plot_mt.py --input INPUTFILE.root
+python3 analysis/plot_mt.py --input INPUTFILE.root
 ~~~
 {: .source}
-where you can replace `INPUTFILE.root` with the path to your NanoGEN.root file, or use `/FIXME/NanoGEN.root` which is a slightly larger file to produce smoother distributions.
+where you can replace `INPUTFILE.root` with the path to your NanoGEN.root file, or use `/eos/uscms/store/user/cmsdas/2023/short_exercises/Generators/NanoGEN.root` which is a slightly larger file to produce smoother distributions.
 In order to produce the MT histogram we reweight the sample to an integrated luminosity corresponding to the 2018 data taking (60/fb).
 The different scale and PDF weights are contained in branches `LHEScaleWeight` and `LHEPdfWeight`.
 
