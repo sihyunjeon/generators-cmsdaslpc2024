@@ -48,7 +48,7 @@ The most prominent examples are the choice of the parton distribution function (
 
 Several different PDF sets are usually stored in samples that are centrally produced in CMS.
 In order to save space, only one PDF set is stored in NanoAOD and NanoGEN.
-For the UL campaign, the NNPDF3.1 NNLO PDF set is used ([LHAPDF](https://lhapdf.hepforge.org/pdfsets.html)), which contains 103 per-event weights.
+For the UL campaign, the [NNPDF3.1](https://nnpdf.mi.infn.it) NNLO PDF set is used ([LHAPDF](https://lhapdf.hepforge.org/pdfsets.html)), which contains 103 per-event weights.
 The stored weights called `LHEPdfWeight` are ratios w.r.t. the central value, therefore, the weight with index 0 should usually be 1 (if not it means that different PDFs were used for the central ME and the computed variations and extra care needs to be taken).
 Indices 1-100 are different, linear independent PDF sets that can be used to estimate systematic uncertainties, while indices 101 and 102 correspond to the up and down variations of the strong coupling constant.
 
