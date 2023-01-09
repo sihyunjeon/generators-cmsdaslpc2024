@@ -13,14 +13,19 @@ keypoints:
 - "MadGraph is a widely used tool to generate matrix-element predictions for the hard scatter for SM and BSM processes."
 - "MadGraph can be used interactively, or steered using text-based cards"
 - "Gridpacks are used for large scale productions"
-- "MadAnalysis is a tool that allows for quick checks of distributions"
+- "MadAnalysis is a tool that allows for quick checks of kinematic distributions"
 ---
 
 # Introduction and first steps
 
 Samples of simulated events originating from certain processes are essential in high energy physics.
+They are used for studies of physics objects, background predictions or signal efficiency and acceptance determinations.
 Processes at vastly different energy regimes are involved, from the hard scattering process to hadronization and parton showering.
-Luckily, these different processes factorize!
+Luckily, these different processes factorize which allows us to separate the treatment of processes happening at different momentum transfer scales.
+
+The hard scatter of the incoming partons happens at the highest involved scale, and can be treated perturbatively.
+Soft processes that finally lead to the formation of the observed final state hadrons cannot yet be calculated from first principles and therefore need to be modeled.
+Secondary interactions of other constituent partons of the colliding hadrons are called underlying event.
 Although the hard and soft process are distinct, they are connected by an evolutionary Markov process that leads to parton showering.
 The partons produced in this process eventually participate in the hadron formation (hadronization) where color singlet states are formed.
 Monte Carlo techniques can be used for simulating the Markov process, efficient integration of the high dimensional hard scatter problem, and the hadronization models.
@@ -28,8 +33,14 @@ Monte Carlo techniques can be used for simulating the Markov process, efficient 
 
 ## Using Madgraph to simulate the hard scatter process
 
-In this short exercise we will use the interactive prompt of Madgraph to generate proton proton collision events that produce W bosons.
-Start the interactive prompt of Madgraph:
+In the first part of the exercise, we will use the matrix element generator MadGraph5 _aMC@NLO, or in short MG5.
+MG5 can perform automatic matrix element predictions for many processes at leading and next-to-leading order accuracy in QCD.
+Because of its ease of use for processes both in and beyond the standard model, it is one of the most widely used software tools to model the hard interaction.
+
+We will first use the interactive prompt of MG5 to generate proton proton collision events that produce W bosons.
+First, log in to a new session on the LPC cluster (`ssh -Y USER@@cmslpc-sl7.fnal.gov`).
+Make sure you have completed the setup steps!
+Then, start the interactive prompt of Madgraph:
 ~~~bash
 cd $CDGPATH/MG5_aMC_v2_6_5/
 ./bin/mg5_aMC
