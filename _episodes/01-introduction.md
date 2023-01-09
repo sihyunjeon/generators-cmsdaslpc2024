@@ -82,6 +82,8 @@ If you are trying to set up a new MC sample, looking at these Feynman diagrams i
 To check them out you can open the individual plots in e.g. `wplustest_4f_LO/SubProcesses/P0_qq_wp_wp_lvl/matrix*.ps` with `gv`, `display` or `evince`.
 You can also use the `ps2pdf` program to convert the post script files into PDFs.
 
+Alternatively, remove `-nojpeg` from the output line and look at the diagrams in jpeg format using `display`.
+
 Now that MG has figured out the feynman diagrams you can start the actual computation within the MG5 prompt with
 ~~~bash
 launch
@@ -220,7 +222,7 @@ The LHE file is plain text, so it's usually a good idea to use some compression 
 > > ~~~
 > > {: .source}
 > >
-> > When prompted about the run_card, use `${CDGPATH}/gen-cmsdas-2022/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat` again.
+> > When prompted about the run_card, use `${CDGPATH}/gen-cmsdas-2023/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat` again.
 > > ~~~
 > >   === Results Summary for run: run_01 tag: tag_1 ===
 > > 
