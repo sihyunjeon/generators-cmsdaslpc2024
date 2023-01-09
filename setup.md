@@ -39,7 +39,7 @@ git clone -b mg265UL https://github.com/cms-sw/genproductions.git genproductions
 
 You can check that the MadGraph steering cards of the example we will be using are actually there:
 ~~~bash
-ls -rtl genproductions/bin/MadGraph5_aMCatNLO/cards/examples/wplustest_4f_LO/
+ls -rtl genproductions_mg265/bin/MadGraph5_aMCatNLO/cards/examples/wplustest_4f_LO/
 ~~~
 {: .source}
 

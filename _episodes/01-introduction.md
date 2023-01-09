@@ -51,7 +51,7 @@ Madgraph is configured and steered through text-based cards.
 The process definitions can be stored in a card called `proc_card.dat`.
 You can look at an example using the following command:
 ~~~bash
-!cat $CDGPATH/gen-cmsdas-2022/cards/wplustest_4f_LO/wplustest_4f_LO_proc_card.dat
+!cat $CDGPATH/gen-cmsdas-2023/cards/wplustest_4f_LO/wplustest_4f_LO_proc_card.dat
 ~~~
 {: .source}
 
@@ -95,7 +95,7 @@ launch wplustest_4f_LO
 {: .source}
 MG will ask you a few more questions.
 Once asked about the `run_card`, one can either use a default run card by just pressing ENTER and edit the default `run_card` by hand or provide a path to a run card of one's choice.
-Please provide the path to the pre-made run_card: `${CDGPATH}/gen-cmsdas-2022/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat`
+Please provide the path to the pre-made run_card: `${CDGPATH}/gen-cmsdas-2023/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat`
 
 What is the cross section determined by Madgraph?
 
@@ -141,7 +141,7 @@ The LHE file is plain text, so it's usually a good idea to use some compression 
 > ## Looking at the LHE output
 > Find the LHE file produced by MG and find the first event block.
 > > ## Example solution
-> > 
+> > Exit MG, then do
 > > ~~~bash
 > > find -name '*.lhe.gz'
 > > gzip -d ./wplustest_4f_LO/Events/run_01/unweighted_events.lhe.gz

@@ -9,7 +9,7 @@ objectives:
 - "Leverage available tools for efficient analysis work"
 keypoints:
 - "DAS can be used to find samples and their files, number of events for a certain sample etc"
-- "McM is used for sample generation management, and can be used by the user to obtain additional information about their samples, e.g. the root gridpack, fragments et.
+- "McM is used for sample generation management, and can be used by the user to obtain additional information about their samples, e.g. the root gridpack, fragments etc."
 - "McM is also a good place to look for example cmsDriver commands"
 - "Different sources for x-secs exist within CMS: a CMSSW analyzer and a database"
 ---
