@@ -82,7 +82,7 @@ If you are trying to set up a new MC sample, looking at these Feynman diagrams i
 To check them out you can open the individual plots in e.g. `wplustest_4f_LO/SubProcesses/P0_qq_wp_wp_lvl/matrix*.ps` with `gv`, `display` or `evince`.
 You can also use the `ps2pdf` program to convert the post script files into PDFs.
 
-Now that MG has figured out the feynman diagrams you can start the actual computation with
+Now that MG has figured out the feynman diagrams you can start the actual computation within the MG5 prompt with
 ~~~bash
 launch
 ~~~
@@ -90,11 +90,13 @@ launch
 
 Hint: if you closed the interactive MG session for some reason you can still launch without rerunning the previous commands with
 ~~~bash
+cd $CDGPATH/MG5_aMC_v2_6_5/
+./bin/mg5_aMC
 launch wplustest_4f_LO
 ~~~
 {: .source}
-MG will ask you a few more questions.
-Once asked about the `run_card`, one can either use a default run card by just pressing ENTER and edit the default `run_card` by hand or provide a path to a run card of one's choice.
+MG will ask you a few more questions. The first one you can just skip by pressing \<RETURN\>.
+Once asked about the `run_card`, one can either use a default run card by just inserting `2` and hitting \<RETURN\> to edit the default `run_card` by hand, or provide a path to a run card of one's choice.
 Please provide the path to the pre-made run_card: `${CDGPATH}/gen-cmsdas-2023/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat`
 
 What is the cross section determined by Madgraph?
@@ -181,12 +183,18 @@ The LHE file is plain text, so it's usually a good idea to use some compression 
 
 > ## MadGraph syntax
 > If you want to add another process, e.g. production of W- in the above example, you can add another process with `add process p p > w-, w- > ell- vl~`
+>
 > A detailed introduction to the syntax is given in [this documentation](https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/InputEx).
 > Some very basic things to keep in mind:
+>
 > `generate p p > e+ e-` will generate any diagram that is compatible with the used model that produces an electron / positron pair
+>
 > `generate p p > e+ e- / Z` will exclude diagrams that contain a Z boson as internal paricle
+>
 > `generate p p > e+ e- $ Z` will exclude the Z boson from appearing in the s-channel (careful about gauge invariance)
+>
 > `generate p p > Z > e+ e-` will always include a Z boson in the s-channel (careful about gauge invariance)
+>
 > `generate p p > w+ QED=3` will include all QED contributions, otherwise the QED order is always set to its minimal value
 {: .callout}
 

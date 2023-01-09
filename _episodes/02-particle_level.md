@@ -349,7 +349,7 @@ In this exercise, we will see how to set up this method technically and validate
 We have prepared an MG5 gridpack for a W+jet process, which you can find at this location:
 `/eos/uscms/store/user/cmsdas/2023/short_exercises/Generators/WJetsToLNu_HT-0toInf_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz`
 
-You can look at the `proc_card.dat` and `run_card.dat` either by unpacking the gridpack, or by opening it directly with e.g. `vim /eos/uscms/store/user/cmsdas/2023/short_exercises/Generators/WJetsToLNu_HT-0toInf_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz` (for non-vim users: <ESC>, `: q` to close).
+You can look at the `proc_card.dat` and `run_card.dat` either by unpacking the gridpack, or by opening it directly with e.g. `vim /eos/uscms/store/user/cmsdas/2023/short_exercises/Generators/WJetsToLNu_HT-0toInf_slc7_amd64_gcc700_CMSSW_10_6_19_tarball.tar.xz` (for non-vim users: \<ESC\>, `: q` to close).
 
 Compare the input cards to the ones we used before.
 What is different, what stayed the same? What can you learn from the log file?
