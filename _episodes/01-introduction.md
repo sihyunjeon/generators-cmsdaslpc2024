@@ -13,7 +13,7 @@ keypoints:
 - "MadGraph is a widely used tool to generate matrix-element predictions for the hard scatter for SM and BSM processes."
 - "MadGraph can be used interactively, or steered using text-based cards"
 - "Gridpacks are used for large scale productions"
-- "MadAnalysis is a tool that allows for quick checks of kinematic distributions"
+- "MadAnalysis is a tool that allows for quick checks of kinematic distributions" 
 ---
 
 # Introduction and first steps
@@ -21,87 +21,183 @@ keypoints:
 Samples of simulated events originating from certain processes are essential in high energy physics.
 They are used for studies of physics objects, background predictions or signal efficiency and acceptance determinations.
 Processes at vastly different energy regimes are involved, from the hard scattering process to hadronization and parton showering.
-Luckily, these different processes factorize which allows us to separate the treatment of processes happening at different momentum transfer scales.
+Luckily, these different processes factorize which allows us to separate the treatment of processes happening at different momentum transfer scales. #FIXME
 
 The hard scatter of the incoming partons happens at the highest involved scale, and can be treated perturbatively.
-Soft processes that finally lead to the formation of the observed final state hadrons cannot yet be calculated from first principles and therefore need to be modeled.
+Soft processes that finally lead to the formation of the observed final state hadrons cannot yet be calculated from first principles and therefore need to be modeled. #FIXME
 Secondary interactions of other constituent partons of the colliding hadrons are called underlying event.
 Although the hard and soft process are distinct, they are connected by an evolutionary Markov process that leads to parton showering.
 The partons produced in this process eventually participate in the hadron formation (hadronization) where color singlet states are formed.
-Monte Carlo techniques can be used for simulating the Markov process, efficient integration of the high dimensional hard scatter problem, and the hadronization models.
+Monte Carlo techniques can be used for simulating the Markov process, efficient integration of the high dimensional hard scatter problem, and the hadronization models. #FIXME
 
 
 ## Using Madgraph to simulate the hard scatter process
 
 In the first part of the exercise, we will use the matrix element generator MadGraph5 _aMC@NLO, or in short MG5.
 MG5 can perform automatic matrix element predictions for many processes at leading and next-to-leading order accuracy in QCD.
-Because of its ease of use for processes both in and beyond the standard model, it is one of the most widely used software tools to model the hard interaction.
+Because of its ease of use for processes both in and beyond the standard model, it is one of the most widely used software tools to model the hard interaction. #FIXME
 
 We will first use the interactive prompt of MG5 to generate proton proton collision events that produce W bosons.
-First, log in to a new session on the LPC cluster (`ssh -Y USER@@cmslpc-sl7.fnal.gov`).
+First, log in to a new session on the LPC cluster (`ssh -Y USER@cmslpc-sl7.fnal.gov`).
 Make sure you have completed the setup steps!
-Then, start the interactive prompt of Madgraph:
+Then, start the interactive prompt of Madgraph: #FIXME
 ~~~bash
-cd $CDGPATH/MG5_aMC_v2_6_5/
-./bin/mg5_aMC
+cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v3_5_2/
+cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/standalone ./
+./bin/mg5_aMC standalone/setup.config
 ~~~
 {: .source}
 
-Madgraph is configured and steered through text-based cards.
-The process definitions can be stored in a card called `proc_card.dat`.
-You can look at an example using the following command:
-~~~bash
-!cat $CDGPATH/gen-cmsdas-2023/cards/wplustest_4f_LO/wplustest_4f_LO_proc_card.dat
-~~~
-{: .source}
+Before proceeding further, take a look at `input/mg5_configuration.txt` and change `# text_editor = None` by removing `#` and replacing `None` with your favorite text editor. For example, `text_editor = vim`.
 
-Note: the exclamation mark is used to execute shell commands within Madgraph, e.g. `!cat` in the above example.
-Copy/paste the commands line-by-line and pay attention to the output.
-~~~
-import model sm-ckm
+Now let's try with the simplest example.
+~~~mgshell
+import model sm
 
-define ell+ = e+ mu+ ta+
-define ell- = e- mu- ta-
+generate p p > z, z > e+ e-
 
-generate p p > w+, w+ > ell+ vl @0
-
-output wplustest_4f_LO -nojpeg
+output ZtoEE
 ~~~
 {: .output}
 
-The two most important lines of this block are the model import (`import model sm-ckm`) and the instructions on the process to generate (`generate p p > w+, w+ > ell+ vl`).
-Within the MG directory you can find a directory `models`, that contains different pre-installed models.
-The most obvious one that we are using in the example is `sm` - the standard model at leading order in perturbative QCD.
-Model parameters can be configured through ''restriction cards'', in this example `restrict_ckm.dat` loaded through the syntax `sm-ckm`.
-This specific restriction card uses a non-diagonal [CKM matrix](https://en.wikipedia.org/wiki/Cabibbo–Kobayashi–Maskawa_matrix) (diagonal CKM is the default otherwise for simplification and faster running).
-One great feature of MadGraph is it's flexibility in terms of physics models to use.
-To generate a sample using a new physics model one can use the UFO interface. A database of models can be found in the [feynrules model database](http://feynrules.irmp.ucl.ac.be/wiki/ModelDatabaseMainPage).
+First line imports the UFO model to use for matrix element calculations.
+Second line defines which physics process to generate, this particular example generates the process where two quarks produce a Z boson and then decays into a pair of electrons.
 
-The practically most relevant part is that MG figures out all relevant Feynman diagrams contributing to a process.
-If you are trying to set up a new MC sample, looking at these Feynman diagrams is a great way to check that you actually get the physics you want.
-To check them out you can open the individual plots in e.g. `wplustest_4f_LO/SubProcesses/P0_qq_wp_wp_lvl/matrix*.ps` with `gv`, `display` or `evince`.
-You can also use the `ps2pdf` program to convert the post script files into PDFs.
-
-Alternatively, remove `-nojpeg` from the output line and look at the diagrams in jpeg format using `display`.
-
-Now that MG has figured out the feynman diagrams you can start the actual computation within the MG5 prompt with
+Now start the computation of this process.
 ~~~bash
 launch
 ~~~
 {: .source}
 
-Hint: if you closed the interactive MG session for some reason you can still launch without rerunning the previous commands with
-~~~bash
-cd $CDGPATH/MG5_aMC_v2_6_5/
-./bin/mg5_aMC
-launch wplustest_4f_LO
-~~~
-{: .source}
-MG will ask you a few more questions. The first one you can just skip by pressing \<RETURN\>.
-Once asked about the `run_card`, one can either use a default run card by just inserting `2` and hitting \<RETURN\> to edit the default `run_card` by hand, or provide a path to a run card of one's choice.
-Please provide the path to the pre-made run_card: `${CDGPATH}/gen-cmsdas-2023/cards/wplustest_4f_LO/wplustest_4f_LO_run_card.dat`
+Press `tab` to turn off the timer (otherwise, MadGraph will move on by itself after 60 seconds).
 
-What is the cross section determined by Madgraph?
+You can see that MadGraph asking you several questions as shown below.
+~~~mgshell
+/================ Description =================|=========== values ===========|====== other options ======\
+| 1. Choose the shower/hadronization program   |   shower = Not Avail.        |   Please install module   |
+| 2. Choose the detector simulation program    | detector = Not Avail.        |   Please install module   |
+| 3. Choose an analysis package (plot/convert) | analysis = Not Avail.        |   Please install module   |
+| 4. Decay onshell particles                   |  madspin = OFF               |   ON|onshell|full         |
+| 5. Add weights to events for new hypp.       | reweight = OFF               |   ON                      |
+\=========================================================================================================/
+~~~
+{: .output}
+As we did not install any other `shower`, `detector`, or `analysis` tools, all are in `Not Avail.` state.
+We will learn later how showering will be done under CMSSW and run brief analysis code to analyze the events we produce from this tutorial.
+`madspin` will be demonstrated later using top pair process example.
+`reweight` is out of scope for this tutorial although it is quite useful for certain BSM scenarios.
+
+Let's move on by pressing `ENTER`.
+Press `tab` to turn off the timer (otherwise, MadGraph will move on by itself after 90 seconds).
+
+You can see that MadGraph asking you several questions as shown below.
+~~~mgshell
+Do you want to edit a card (press enter to bypass editing)?
+/------------------------------------------------------------\
+|  1. param : param_card.dat                                 |
+|  2. run   : run_card.dat                                   |
+\------------------------------------------------------------/
+ you can also
+   - enter the path to a valid card or banner.
+   - use the 'set' command to modify a parameter directly.
+     The set option works only for param_card and run_card.
+     Type 'help set' for more information on this command.
+   - call an external program (ASperGE/MadWidth/...).
+     Type 'help' for the list of available command
+ [0, done, 1, param, 2, run, enter path][90s to answer] 
+~~~
+{: .output}
+
+Let's take a look at the cards and see how the values are set, press `1` and `ENTER` to investigate the parameter settings.
+~~~mgshell
+###################################
+## INFORMATION FOR MASS
+###################################
+Block mass
+    5 4.700000e+00 # MB 
+    6 1.730000e+02 # MT 
+   15 1.777000e+00 # MTA 
+   23 9.118800e+01 # MZ 
+   25 1.250000e+02 # MH 
+
+###################################
+## INFORMATION FOR DECAY
+###################################
+DECAY   6 1.491500e+00 # WT 
+DECAY  23 2.441404e+00 # WZ 
+DECAY  24 2.047600e+00 # WW 
+DECAY  25 6.382339e-03 # WH 
+~~~
+{: .output}
+
+Let's take a look at the cards and see how the values are set, press `2` and `ENTER` to investigate the run settings.
+~~~mgshell
+#*********************************************************************
+# Number of events and rnd seed                                      *
+# Warning: Do not generate more than 1M events in a single run       *
+#*********************************************************************
+  10000 = nevents ! Number of unweighted events requested
+  0   = iseed   ! rnd seed (0=assigned automatically=default))
+
+#*********************************************************************
+# Collider type and energy                                           *
+# lpp: 0=No PDF, 1=proton, -1=antiproton,                            *
+#                2=elastic photon of proton/ion beam                 *
+#             +/-3=PDF of electron/positron beam                     *
+#             +/-4=PDF of muon/antimuon beam                         *
+#*********************************************************************
+     1        = lpp1    ! beam 1 type
+     1        = lpp2    ! beam 2 type
+     6500.0     = ebeam1  ! beam 1 total energy in GeV
+     6500.0     = ebeam2  ! beam 2 total energy in GeV
+
+#*********************************************************************
+# Standard Cuts                                                      *
+#*********************************************************************
+# Minimum and maximum pt's (for max, -1 means no cut)                *
+#*********************************************************************
+ 10.0  = ptl       ! minimum pt for the charged leptons
+ -1.0  = ptlmax    ! maximum pt for the charged leptons
+ {} = pt_min_pdg ! pt cut for other particles (use pdg code). Applied on particle and anti-particle
+ {}     = pt_max_pdg ! pt cut for other particles (syntax e.g. {6: 100, 25: 50})
+
+#*********************************************************************
+# Minimum and maximum invariant mass for pairs                       *
+#*********************************************************************
+ 0.0   = mmll    ! min invariant mass of l+l- (same flavour) lepton pair
+ -1.0  = mmllmax ! max invariant mass of l+l- (same flavour) lepton pair
+ {} = mxx_min_pdg ! min invariant mass of a pair of particles X/X~ (e.g. {6:250})
+ {'default': False} = mxx_only_part_antipart ! if True the invariant mass is applied only
+                       ! to pairs of particle/antiparticle and not to pairs of the same pdg codes.
+
+#*********************************************************************
+# maximal pdg code for quark to be considered as a light jet         *
+# (otherwise b cuts are applied)                                     *
+#*********************************************************************
+ 4 = maxjetflavor    ! Maximum jet pdg code
+~~~
+{: .output}
+
+Try editting the beam energy (`ebeam1` and `ebeam2) `6500` to `6800` as we are running at 13.6TeV beam energy.
+When done with editting, escape after saving the changes in the text file.
+
+MadGraph allows you to change settings by interactively typing in below.
+~~~mgshell
+set run_card nevents 5000
+~~~
+{: .output}
+
+Take a look at the card again and see if number of events to generate (`nevents`) is changed to `5000`.
+
+As shown above, there are several phase space cuts set by default (e.g. `10.0 = ptl`).
+There is a handy command that removes all phase space cuts at once.
+~~~mgshell
+set no_parton_cut
+~~~
+{: .output}
+
+Take a look at the card again and see if lepton pt cut (`ptl`) is changed to `0`.
+Now, let's really start the computation by moving on, press `ENTER`.
 
 > ## Obtaining the cross section
 >
