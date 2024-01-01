@@ -44,7 +44,12 @@ To do this we need to clone the CMS genproductions repository.
 mkdir -p ${GENTUTPATH}/gridpack-tut/
 cd ${GENTUTPATH}/gridpack-tut/
 git clone --depth 1 https://github.com/cms-sw/genproductions.git
-cd bin/MadGraph5_aMCatNLO
+~~~
+{: .source}
+
+Return back to the home path to start with standalone tutorial.
+~~~bash
+cd ${GENTUTPATH}/standalone-tut
 ~~~
 {: .source}
 
