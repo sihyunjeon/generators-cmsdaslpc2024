@@ -244,7 +244,7 @@ Scroll down to look at the first event and exit with `q`.
 > > ## Solution
 > > `ID`, `status`, `mother1`, `mother2`, `color`, `anticolor`, `px`, `py`, `pz`, `E`, `mass`, `life time`, and `spin`
 > > ~~~output
-> >       -11  1    3    3    0    0 -2.3393803385e+01 -7.4187481776e+00 -1.5274153214e+02 1.5470062541e+02 0.0000000000e+00 0.0000e+00 1.0000e+00
+> > -11  1    3    3    0    0 -2.3393803385e+01 -7.4187481776e+00 -1.5274153214e+02 1.5470062541e+02 0.0000000000e+00 0.0000e+00 1.0000e+00
 > > ~~~
 > > {: .output}
 > > This line tells you that a positron (`ID`) is an outgoing particle (`status`) with Z as its mother (`mother1` and `mother2` : 3rd particle is Z which is `ID=23`) with no color (`color` and `anticolor`), ...
@@ -339,23 +339,209 @@ To avoid having to use the interactive mode, one can make use the card structure
 A fully automated workflow for running MG and producing gridpacks is maintained in the [genproductions repository](https://github.com/cms-sw/genproductions).
 A gridpack is simply an archive file that contains all the executable MG5 code needed to produce LHE events for a given process, which can then be executed easily on many different grid workers (hence the name).
 It has the advantage that once it is created, it is a one-button program to generate events, no thinking required.
-In this part of the exercise, we will use the same input cards as before to create a gridpack, run it, and compare the results to before.
+In this part of the exercise, we will use the same input cards as before to create a gridpack, run it, and compare the results to before. #FIXME
 
 Gridpacks are generated using the gridpack_generation script, which we will run in local mode, i.e. on the machine we are currently logged in to.
 Note that scripts are provided to run the gridpacks on other computing infrastructures such as the CERN batch system and CMSConnect, which is useful for more complicated processes.
 
-To create a gridpack, we simply call gridpack_generation.sh and pass the process name and card location to it.
+To create a gridpack, we simply call gridpack_generation.sh and pass the process name and card location to it. #FIXME
 
-> ## Setting and unsetting the CMSSW environment
-> You should not have activated a CMSSW environment in this exercise so far.
-> However, if you did so before, you need to unset it in order to not interfere with the genproductions script.
-> You can run the following command to unset the CMSSW environment, or log in to a clean new session.
-> ~~~bash
-> eval `scram unsetenv -sh`
-> ~~~
-> {: .source}
-{: .callout}
+As the CMSSW environment that has been already set from above could interfere with the genproductions script you would need to execute below to remove CMSSW environment settings (or open a new terminal).
 
+~~~bash
+eval `scram unsetenv -sh`
+~~~
+{: .source}
+
+Now lets go into genproductions to try out the gridpack production.
+
+~~~bash
+cd $GENGRIDPACKPATH/bin/MadGraph5_aMCatNLO
+cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/gridpack ./
+~~~
+{: .source}
+
+Take a look at the cards in `gridpack/ztoee-0j/` directory.
+These two files are minimal inputs to make gridpacks.
+
+~~~bash
+less gridpack/ztoee-0j/ztoee-0j_proc_card.dat
+less gridpack/ztoee-0j/ztoee-0j_run_card.dat 
+~~~
+{: .source}
+
+You would notice that the `proc_card.dat` defines the physics process that we want to calculate is the same as the first example with standalone tutorial.
+From the `run_card.dat` you would notice that PDF choice block is different like below.
+
+~~~output
+#*********************************************************************
+# PDF CHOICE: this automatically fixes also alpha_s and its evol.    *
+#*********************************************************************
+  'lhapdf'    = pdlabel     ! PDF set                                  
+$DEFAULT_PDF_SETS = lhaid
+$DEFAULT_PDF_MEMBERS = reweight_PDF     ! if pdlabel=lhapdf, this is the lhapdf number
+~~~
+{: .output}
+
+`$DEFAULT_PDF_SETS` and `DEFAULT_PDF_MEMBERS` are parsed later automatically through `Utilities/gridpack_helpers.sh`.
+This is to keep consistent PDF setup among different CMS samples.
+
+As there are many people running the tutorial at once, let's restrict the core usage to 2 and then start the gridpack production.
+
+~~~bash
+export NB_CORE=2
+./gridpack_generation.sh ztoee-0j gridpack/ztoee-0j/ pdmv
+~~~
+{: .source}
+
+Note `pdmv` is only there to restrict the number of cores to use to two set with `NB_CORE`, normally you can just execute it with `./gridpack_generation.sh <process name> <path to card>` without `pdmv`.
+
+Keep in mind that everything is exactly the same as the standalone tutorial except that `gridpack_generation.sh` is merely replacing every interactive commands that we were giving to MadGraph prompt shell.
+
+You can see that MadGraph is downloaded from the web,
+
+~~~output
+/uscms/home/sjeon/nobackup/GENTUTORIAL/gridpack-tut/genproductions/bin/MadGraph5_aMCatNLO
+WARNING: In non-interactive mode release checks e.g. deprecated releases, production architectures are disabled.
+WARNING: In non-interactive mode release checks e.g. deprecated releases, production architectures are disabled.
+--2024-01-01 17:21:56--  https://cms-project-generators.web.cern.ch/cms-project-generators/MG5_aMC_v2.9.13.tar.gz
+Resolving cms-project-generators.web.cern.ch (cms-project-generators.web.cern.ch)... 2001:1458:d00:4e::100:3c0, 188.184.74.207
+Connecting to cms-project-generators.web.cern.ch (cms-project-generators.web.cern.ch)|2001:1458:d00:4e::100:3c0|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 26561088 (25M) [application/gzip]
+Saving to: 'MG5_aMC_v2.9.13.tar.gz'
+
+     0K .......... .......... .......... .......... ..........  0%  228K 1m54s
+    50K .......... .......... .......... .......... ..........  0%  456K 85s
+   100K .......... .......... .......... .......... ..........  0%  181M 57s
+   150K .......... .......... .......... .......... ..........  0%  301M 42s
+~~~
+{: .output}
+
+then applying several patches (to mitigate several bugs that are discovered after the release),
+
+~~~output
+patching file models/loop_qcd_qed_sm/restrict_lepton_masses_no_lepton_yukawas.dat
+patching file models/loop_sm/restrict_ckm_no_b_mass.dat
+patching file models/sm/restrict_ckm_lepton_masses.dat
+patching file models/sm/restrict_ckm_lepton_masses_no_b_mass.dat
+patching file models/sm/restrict_ckm_no_b_mass.dat
+patching file models/sm/restrict_lepton_masses_no_b_mass.dat
+patching file Template/NLO/SubProcesses/MCmasses_PYTHIA8.inc
+patching file madgraph/interface/loop_interface.py
+patching file madgraph/various/systematics.py
+patching file Template/NLO/Source/make_opts.inc
+patching file madgraph/iolibs/export_v4.py
+patching file madgraph/iolibs/template_files/pdf_opendata.f
+patching file madgraph/iolibs/template_files/pdf_wrap_lhapdf.f
+~~~
+{: .output}
+
+then finding the desired Feynman diagram defined in `proc_card.dat`,
+
+~~~output
+import model sm
+INFO: load particles 
+INFO: load vertices 
+INFO: Restrict model sm with file MG5_aMC_v2_9_13/models/sm/restrict_default.dat . 
+INFO: Run "set stdout_level DEBUG" before import for more information. 
+INFO: Change particles name to pass to MG5 convention 
+Defined multiparticle p = g u c d s u~ c~ d~ s~
+Defined multiparticle j = g u c d s u~ c~ d~ s~
+Defined multiparticle l+ = e+ mu+
+Defined multiparticle l- = e- mu-
+Defined multiparticle vl = ve vm vt
+Defined multiparticle vl~ = ve~ vm~ vt~
+Defined multiparticle all = g u c d s u~ c~ d~ s~ a ve vm vt e- mu- ve~ vm~ vt~ e+ mu+ t b t~ b~ z w+ h w- ta- ta+
+generate p p > z, z > e+ e-
+INFO: Checking for minimal orders which gives processes. 
+INFO: Please specify coupling orders to bypass this step. 
+INFO: Trying process: g g > z WEIGHTED<=2 @1  
+~~~
+{: .output}
+
+and finally giving out the computed cross sections.
+
+~~~output
+  === Results Summary for run: pilotrun tag: tag_1 ===
+
+     Cross-section :   1730 +- 5.893 pb
+     Nb of events :  0
+~~~
+{: .output}
+
+> ## Why did the cross section change?
+>
+> You would notice that the cross section has changed from 1493pb to 1730pb. What would be the reasons although we ran on exact same physics process?
+>
+> > ## Solution
+> >
+> > Most importantly, different PDF set has been used (check by looking at `ztoee-0j/ztoee-0j_gridpack/work/gridpack/process/madevent/Cards/run_card.dat`). This will give you totally different assumptions on parton fractions in a proton. Other minor reasons for the difference could be use of different MadGraph version or different random seed.
+> > 
+> {: .solution}
+{: .challenge}
+
+Now try the same with different gridpack cards.
+
+~~~bash
+./gridpack_generation.sh ztoee-0j-5FS gridpack/ztoee-0j-5FS/ pdmv
+~~~
+{:. shell}
+
+This will give you a new contribution to the process that is `b b~ > z, z > e+ e-` to the calculation as it uses different UFO model that is `sm-no_b_mass`. Strictly speaking, we are using the same UFO model but adding a restriction to the model. Take a look at [restriction_card_tutorial](https://indico.cern.ch/event/239005/attachments/402547/559634/13_02_16_tutomg.pdf) from slide 24 for more information.
+
+~~~output
+import model sm-no_b_mass
+INFO: load particles 
+INFO: load vertices 
+INFO: Restrict model sm-no_b_mass with file MG5_aMC_v2_9_13/models/sm/restrict_no_b_mass.dat . 
+INFO: Run "set stdout_level DEBUG" before import for more information. 
+INFO: Change particles name to pass to MG5 convention 
+Defined multiparticle p = g u c d s u~ c~ d~ s~
+Defined multiparticle j = g u c d s u~ c~ d~ s~
+Defined multiparticle l+ = e+ mu+
+Defined multiparticle l- = e- mu-
+Defined multiparticle vl = ve vm vt
+Defined multiparticle vl~ = ve~ vm~ vt~
+Pass the definition of 'j' and 'p' to 5 flavour scheme.
+Defined multiparticle all = g u c d s b u~ c~ d~ s~ b~ a ve vm vt e- mu- ve~ vm~ vt~ e+ mu+ t t~ z w+ h w- ta- ta+
+generate p p > z, z > e+ e-
+
+INFO: Trying process: b b~ > z WEIGHTED<=2 @1  
+INFO: Process has 1 diagrams 
+INFO: Process b~ b > z added to mirror process b b~ > z 
+~~~
+{:. output}
+
+Now you would get the following, somewhat increased cross section 1795pb compared to the previous example 1740pb.
+
+~~~output
+  === Results Summary for run: pilotrun tag: tag_1 ===
+
+     Cross-section :   1795 +- 6.29 pb
+     Nb of events :  0
+~~~
+{:. output}
+
+> ## Why did the cross section change?
+>
+> Did your `proc_card.dat` add any new processes?
+>
+> > ## Solution
+> >
+> > Yes, we now have 5 flavor quarks in the proton which was 4 in the previous example by adding up the bottom quark contributions. So we have new contribution that is `b b~ > z, z > e+ e-`.
+> > 
+> {: .solution}
+>
+> ## But why did it not scale up so much?
+>
+> When we tried out `p p > z, z > e+ e-` and `p p > z, z > l+ l-`, the cross sections was roughly 3 times larger. When we consider 4 (udcs) and 5 (udcsb) flavor schemes of proton should it not be 5/4 times larger?
+>
+> > ## Solution
+> > 
+> >  No, keep in mind that proton consists of two up quarks and one down antiquark which are valence quarks. The rest are sea quark contributions, smaller in PDF. Hence, the amount of increase coming from bottom quark contributions are not so large is what we can infer from this result.
+> > 
+{: .challenge}
 
 
 {% include links.md %}
