@@ -544,7 +544,34 @@ Now you would get the following, somewhat increased cross section 1795pb compare
 > {: .solution}
 {: .challenge}
 
-The first step of tutorial has finished. Before moving on to the next step, execute below as it takes some time to finish.
+Let's recall why gridpack was useful.
+It is a precompiled library to make the LHE files faster for the given process.
+CMS uses gridpacks to produce official samples as it is much easier to keep consistency of the sample.
+Now it's time to find out how we make LHE files from gridpacks.
+To start with, copy and paste the gridpack to a new temporary directory and untar it.
+
+~~~bash
+mkdir test
+cp ../ztoee-012j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz ./
+tar -xvf ztoee-012j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
+~~~
+{:. shell}
+
+You can see that several files were compressed into one tarball.
+Among many files, running `runcmsgrid.sh` will take the precompiled library to generate events for the LHE file.
+Inputs are given in following order, `./runcmsgrid.sh <nevents> <random seed> <ncores>`.
+To make 50 events with random seed 1 using 1 core, execute below.
+
+~~~bash
+./runcmsgrid.sh 50 1 1
+~~~
+{:. shell}
+
+After the run has finished, LHE file with a name `cmsgrid_final.lhe` has been produced.
+It's easy to reproduce more statistics as much as we need than running from scratch with standalone MadGraph.
+
+The first step of tutorial has finished.
+Before moving on to the next step, let's run below as it takes some time to finish.
 
 ~~~bash
 ./gridpack_generation.sh ztoee-012j gridpack/ztoee-012j/ pdmv
