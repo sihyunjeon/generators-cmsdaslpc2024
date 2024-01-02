@@ -51,16 +51,18 @@ Because of its easy user interface and flexibility with UFO models, you can test
 We will now first see how MadGraph runs interactively in standalone mode using simple `Z->ee` process as an example.
 Before we proceed, make sure you have first completed the steps described in "Setup" section.
 
-We start by configuring the MadGraph with several settings.
+We ended with "Setup" section with commands below, configuring MadGraph with several settings.
 ~~~bash
-cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v3_5_2/
+cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v2_9_18/
 cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/standalone ./
 ./bin/mg5_aMC standalone/setup.config
 ~~~
 {: .source}
 
-We restrict ourselves to using maximally 2 cores with `set nb_core 2`.
+Through this, we restrict ourselves to using maximally 2 cores with `set nb_core 2`.
 Otherwise MadGraph will interfere with other people's running jobs.
+We also installed `ninja` and `collier` which are tools that MadGraph adopts for NLO calculations.
+
 Before going further, go into `input/mg5_configuration.txt` and change `# text_editor = None` by removing `#` and replacing `None` with your favorite text editor. For example, `text_editor = vim`.
 
 Now launch MadGraph prompt shell by doing :
