@@ -31,10 +31,10 @@ This is to first demonstrate how MadGraph runs as it is before going deeper into
 ~~~bash
 mkdir -p ${GENTUTPATH}/standalone-tut
 cd ${GENTUTPATH}/standalone-tut
-wget https://cms-project-generators.web.cern.ch/cms-project-generators/MG5_aMC_v3.5.2.tar.gz
-tar -xvf MG5_aMC_v3.5.2.tar.gz
-rm MG5_aMC_v3.5.2.tar.gz
-cd MG5_aMC_v3_5_2
+wget https://cms-project-generators.web.cern.ch/cms-project-generators/MG5_aMC_v2.9.18.tar.gz
+tar -xvf MG5_aMC_v2.9.18.tar.gz
+rm MG5_aMC_v2.9.18.tar.gz
+cd MG5_aMC_v2_9_18
 ~~~
 {: .source}
 
@@ -49,7 +49,9 @@ git clone --depth 1 https://github.com/cms-sw/genproductions.git
 
 Return back to the home path to start with standalone tutorial.
 ~~~bash
-cd ${GENTUTPATH}/standalone-tut
+cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v2_9_18
+cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/standalone ./
+./bin/mg5_aMC standalone/setup.config
 ~~~
 {: .source}
 
