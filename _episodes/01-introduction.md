@@ -31,7 +31,7 @@ The partons produced in this process eventually participate in the hadron format
 Monte Carlo techniques can be used for simulating the Markov process, efficient integration of the high dimensional hard scatter problem, and the hadronization models. #FIXME
 
 
-## First part : Z boson to electron pair
+## (1) Standalone : Z boson to electron pair
 
 In the first part of the exercise, we will use the matrix element generator MadGraph5 _aMC@NLO, or in short MG5.
 MG5 can perform automatic matrix element predictions for many processes at leading and next-to-leading order accuracy in QCD.
@@ -252,7 +252,7 @@ Scroll down to look at the first event and exit with `q`.
 {: .challenge}
 
 
-## Second part : Z boson to dilepton pair (using particle containers)
+## (2) Standalone : Z boson to lepton pair (using particle containers)
 
 Now let's learn about particle containers, launch MadGraph shell prompt.
 
@@ -332,7 +332,7 @@ add process p p > z, z > ta+ ta-
 {: .output}
 
 
-## Using the gridpack workflow
+## (2) Gridpack : Z boson to electron pair (producing gridpacks with CMSSW)
 
 As mentioned previously, interactive running of MG5 is useful for developments and quick tests, but ultimately not practical for large-scale production.
 To avoid having to use the interactive mode, one can make use the card structure of MG.
@@ -540,9 +540,16 @@ Now you would get the following, somewhat increased cross section 1795pb compare
 > > ## Solution
 > > 
 > >  No, keep in mind that proton consists of two up quarks and one down antiquark which are valence quarks. The rest are sea quark contributions, smaller in PDF. Hence, the amount of increase coming from bottom quark contributions are not so large is what we can infer from this result.
-> > 
+> >
+> {: .solution}
 {: .challenge}
 
+The first step of tutorial has finished. Before moving on to the next step, execute below as it takes some time to finish.
+
+~~~bash
+./gridpack_generation.sh ztoee-012j gridpack/ztoee-012j/ pdmv
+~~~
+{:. shell}
 
 {% include links.md %}
 
