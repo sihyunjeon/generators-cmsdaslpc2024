@@ -574,6 +574,7 @@ The first step of tutorial has finished.
 Before moving on to the next step, let's run below as it takes some time to finish.
 
 ~~~bash
+cd -
 ./gridpack_generation.sh ztoee-012j gridpack/ztoee-012j/ pdmv
 ~~~
 {:. shell}
