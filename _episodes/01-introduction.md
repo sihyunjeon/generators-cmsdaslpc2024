@@ -6,10 +6,12 @@ questions:
 - "What is Monte Carlo event generator?"
 - "Why are we using simulated samples in CMS?"
 - "How are the simulated samples produced in CMS?"
+
 objectives:
 - "Running standalone MadGraph with simple Z boson process"
 - "Producing MadGraph gridpacks using CMS script"
 - "Analyzing LHE level information"
+  
 keypoints:
 - "MadGraph is one of the most widely used generator for the hard scattering computations"
 - "Standalone MadGraph can run interactively on-the-fly or by importing the predefined text scripts"
@@ -31,6 +33,7 @@ Samples that are used by CMS experiments go through several steps of simulation 
 3. Pileup mixing
 4. Trigger emulation
 5. Object econstruction
+
 We focus on "1. Monte Carlo event generator" in this tutorial.
 Monte Carlo event generator can be further divided into several subpieces as each steps can be factorized and can be handled through separate calculations :
 1. Parton distribution function (PDF)
@@ -584,6 +587,25 @@ cd -
 ./gridpack_generation.sh ztoee-012j gridpack/ztoee-012j/ pdmv
 ~~~
 {:. shell}
+
+
+> ## Important note : When asking questions to MadGraph authors in Launchpad [link](https://launchpad.net/mg5amcnlo)
+>
+> Quite often, there are people asking questions "I am working for CMS experiment, I tried to make a gridpack using my awesome BSM UFO file with this awesome BSM particle predictions to use for my analysis. But the script I used in genproductions does not give me functional gridpacks. Please help me."
+> 
+> Never do this! Setups in genproductions is not MadGraph authors turf!
+> 1. They have no responsibility to make our gripdack script work.
+> 2. They also have no idea (perhaps some idea) on what we do in genproductions
+> 3. They do not share the same computing environment.
+>
+> Please first consult with GEN conveners or experts through CMS talk [link](https://cms-talk.web.cern.ch/c/physics/gen/102).
+> For more constructive iterations and feedbacks, provide your inputs (`.dat` files you used to generate gridpacks) and all possible error logs.
+> Also as you all now know how to run standalone MadGraph, test your gridpack inputs with standdalone MadGraph first.
+> If it works in standalone run but not in gridpack, it likely could be genproductions issue.
+> If it does not work, it likely could be the core MadGraph issue.
+> 
+{: .callout}
+
 
 {% include links.md %}
 
