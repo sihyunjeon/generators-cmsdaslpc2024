@@ -1,22 +1,77 @@
 ---
-title: "3 - Analysis and systematic uncertainties"
+title: "3 - Optional (MadSpin and BSM UFO model)"
 teaching: 10
 exercises: 20
 questions:
-- "How can we use generator information for quick studies?"
-- "What are systematic uncertainties coming from theory inputs?"
-- "How can we estimate these uncertainties?"
+- "What is MadSpin used for?"
+- "How do we customize the BSM parameters in the UFO model?"
 objectives:
-- "Use NanoGEN for exploratory studies and to gain experience with generator related uncertainties (PDF choice, scale, strong coupling constant)"
-- "Create plots using pre-installed python based tools"
-- "Study some theory related systematic uncertainties"
+- "Understand the role of MadSpin."
+- "Customize BSM parameters for gridpacks."
 keypoints:
 - "PDF uncertainties can be estimated from a set of different per-event weights. The method depends on the type of PDF set that is used (hessian, MC replicas)"
 - "Scale and alphaS variations are another source of uncertainty in the prediction of a simulated sample and can be used to estimate systematic uncertainties"
 - "We differentiate between total uncertainties and acceptance / shape uncertainties"
 ---
 
-# Analysis of generator truth samples
+# Decay of resonant particles
+
+We will learn some advanced use cases of MadGraph which is MadSpin.
+MadSpin, as we saw earlier, is one of the modules that runs through MadGraph interface which handles the decay of resonant particles.
+For example, we ran the physics process defined as 
+~~~
+generate p p > z, z > e+ e-
+~~~
+{: .output}
+Here, `z` is the reonsant particle and hence when one chooses to use MadSpin, above process can be split into two where we first do
+~~~
+generate p p > z
+~~~
+{: .output}
+and then decay `z` into the electron pair using MadSpin.
+
+But the question still remains, why is MadSpin in any case useful?
+The answer lies in NLO calculations in QCD or loop-induced processes.
+Let's launch MadGraph prompt shell again.
+~~~bash
+cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v3_5_2/
+./bin/mg5_aMC
+~~~
+{: .source}
+
+Now try making another simple example that is top pair production.
+~~~
+import model sm
+generate p p > t t~ [QCD]
+~~~
+{: .output}
+It would be not so difficult to realize `[QCD]` has been added in the process definition.
+This is a flag which tells MadGraph that you wish to do the calculations at NLO in QCD.
+
+Before going further, try concatenating top decay as below as we did with `Z->ee` example.
+~~~
+generate p p > t t~, t > w+ b [QCD]
+generate p p > t t~ [QCD], t > w+ b
+exit
+~~~
+{: .output}
+
+You will find neither of these working and instead MadGraph complains that such syntaxes are not possible for NLO calculations.
+This is where MadSpin becomes necessary, for such cases where resonant particle cannot be decayed can be ddecayed thorugh MadSpin.
+Now lets get back to sane example.
+~~~
+import model sm
+generate p p > t t~ [QCD]
+output TopPair
+launch
+4 # "madspin=ON" will work as well
+0
+~~~
+{: .output}
+
+Press `tab` to turn off timer.
+
+<<prompt>>
 
 In the following we will explore a bit the content of NanoGEN samples, and how they can be used for doing first studies for a potentially interesting physics analysis.
 The NanoGEN sample we've previously created contains several trees.
