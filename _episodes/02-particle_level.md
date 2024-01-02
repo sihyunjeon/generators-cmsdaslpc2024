@@ -3,14 +3,15 @@ title: "2 - Particle Level"
 teaching: 10
 exercises: 20
 questions:
-- "Why do we need to do parton showering?"
-- "How are simulated samples created in CMS?"
+- "Why do we need parton shower?"
+- "How do we produce NanoGEN samples"
 objectives:
-- "Generate particle level samples in standard CMS data formats"
-- "Inspect GEN and NanoGEN files"
+- "Perform parton shower with LHE file as an input"
+- "Perform parton shower with gridpack as an input"
+- "Inspect generator level information using NanoGEN files"
 keypoints:
-- "Pythia8 is the main tool used for parton showering in CMS"
-- "Events are unphysical before running hadronization and parton showering"
+- "Pythia8 is the main tool used for parton showering in CMS" #FIXME
+- "Events are not physical if it did not go through parton shower"
 - "CMS detector simulation is the slowest part of the simulation chain, NanoGEN is a convenient shortcut to do quick physics studies"
 - "Proper determination of the qcut is important for samples with additional partons included in the matrix element"
 ---
@@ -45,6 +46,7 @@ cmsenv
 mkdir -p Configuration/GenProduction/python/
 cp $GENTUTPATH/generators-cmsdaslpc2024-git/fragment/zto2e_0j.py Configuration/GenProduction/python/
 scram b
+cd $GENSHOWERPATH
 ~~~
 {: .source}
 
