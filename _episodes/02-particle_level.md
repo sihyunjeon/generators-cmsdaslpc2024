@@ -37,6 +37,7 @@ python3 lhe-root-plotter.py
 ~~~
 {: .source}
 
+~~~
 ------------------------------------
 GenXsecAnalyzer:
 ------------------------------------
@@ -60,7 +61,8 @@ After filter: final fraction of events with negative weights = 0.000e+00 +- 0.00
 After filter: final equivalent lumi for 1M events (1/fb) = 5.378e-01 +- 4.381e-03
 
 =============================================
-
+~~~
+{:. output}
 
 
 
