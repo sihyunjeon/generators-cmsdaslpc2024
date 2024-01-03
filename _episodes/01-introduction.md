@@ -43,14 +43,14 @@ First of all, LHC is a proton-proton collider, hence we need information on how 
 Hard scattering is the part where calculations can be treated perturbatively, interactions of incoming partons with the largest momentum transfer (usually the physics process we are interested in).
 Parton shower & hadronization further describes how the particles involed in the hard scattering evolve, working downwards to lower momentum scales even to a point where perturbative calculations break down.
 
-## (1) Standalone : Z boson to electron pair
+## (1) Standalone : DY to ee
 
-In the first part of the tutorial, we will run one of the most widely used tool for hard scattering calculations, that is MadGraph5_aMCatNLO, in short MadGraph [link](https://launchpad.net/mg5amcnlo).
+In the first exercise, we will run one of the most widely used tool for hard scattering calculations, that is MadGraph5_aMCatNLO, in short MadGraph [link](https://launchpad.net/mg5amcnlo).
 MadGraph can perform the calculations for many different physics processes (both SM and BSM) at LO or NLO in QCD.
 Because of its easy user interface and flexibility with UFO models, you can test wide variety of physics modeling.
-We will now first see how MadGraph runs interactively in standalone mode using simple `Z->ee` process as an example.
-Before we proceed, make sure you have first completed the steps described in "Setup" section.
+We will now first see how MadGraph runs interactively in standalone mode using simple `DYtoee` process as an example.
 
+Before we proceed, make sure you have first completed the steps described in "Setup" section.
 We ended with "Setup" section with commands below, configuring MadGraph with several settings.
 ~~~bash
 cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v2_9_18/
@@ -58,7 +58,6 @@ cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/standalone ./
 ./bin/mg5_aMC standalone/setup.config
 ~~~
 {: .source}
-
 Through this, we restrict ourselves to using maximally 2 cores with `set nb_core 2`.
 Otherwise MadGraph will interfere with other people's running jobs.
 We also installed `ninja` and `collier` which are tools that MadGraph adopts for NLO calculations.
@@ -71,21 +70,21 @@ Now launch MadGraph prompt shell by doing :
 ~~~
 {: .source}
 
-Now let's try with the simplest `Z->ee` example.
+Now let's try with the simplest `DYtoee` example.
 ~~~
 import model sm
-generate p p > z, z > e+ e-
-output ZtoEE
+generate p p > e+ e-
+output standalone-drellyan-mll50
 ~~~
 {: .output}
 
 First line tells MadGraph that you would like to use the UFO model named `sm` for calculations.
-Second line defines which physics process to generate, and in this particular example you are asking for the process where two "quarks from proton" produce a Z boson and then decays into an electron and a positron.
+Second line defines which physics process to generate, and in this particular example you are asking for the process where two "quarks from proton" produce a Z/gamma* mediators and then decays into an electron and a positron.
 Keep in mind that the calculations are performed on "two quarks" and not "two protons".
 The information which translates "protons -> quarks" actually come from PDF.
-Last line sets the output directory for the computation results.
+Last line sets the output directory for the computation results, M50 is to indicate the dilepton mass phase space cut we are about to apply in a few minutes.
 
-Now start the computation with :
+Now launch!
 ~~~
 launch
 ~~~
@@ -105,12 +104,12 @@ Press `tab` to turn off the timer (otherwise, MadGraph will move on by itself af
 {: .output}
 As we did not install any other `shower`, `detector`, or `analysis` tools, all are in `Not Avail.` state.
 We will learn later how showering will be done under CMSSW and run brief analysis code to analyze the events we produce from this tutorial.
-`madspin` will be demonstrated later using top pair process example.
+`madspin` will be demonstrated later using top pair process example in the third (optional) exercise.
 `reweight` is out of scope for this tutorial although it is quite useful for certain BSM scenarios.
 
 Let's move on by pressing `ENTER`.
 
-You can see that MadGraph asking you several questions as shown below.
+You can see that MadGraph is asking you several questions as shown below.
 Again, press `tab` to turn off the timer (otherwise, MadGraph will move on by itself after 90 seconds).
 ~~~
 Do you want to edit a card (press enter to bypass editing)?
@@ -219,6 +218,7 @@ set run_card nevents 5000
 {: .output}
 
 Take a look at the run card again and see if number of events to generate (`nevents`) is changed to `5000`.
+And change it back to `10000` using same command and check again.
 
 As shown above, there are several phase space cuts set by default (e.g. `10.0 = ptl`).
 There is a handy command that removes all phase space cuts at once (instead of doing `set run_card ptl 0`, `set run_card ptj 0`, ... one by one by hand).
@@ -228,11 +228,29 @@ set no_parton_cut
 {: .output}
 
 Take a look at the card again and see if lepton pt cut (`ptl`) is changed to `0`.
-Now, let's really start the computation by moving on, press `ENTER`.
+Keep in mind that the cuts you give before doing `set no_parton_cut` will be removed by this command.
+So don't forget to do `set no_parton_cut` before giving the cuts you wish to give.
+
+As mentioned above, `mll50` in the output directory name stands for dilepton mass cut at 50GeV.
+
+> ## How should we set the dilepton mass cut?
+>
+> In MadGraph LO run card, the name of dilepton mass variable is `mmll`.
+> How should we give 50GeV cut to this value?
+>
+> > ## Solution
+> >
+> > ~~~
+> > set run_card mmll 50
+> > ~~~
+> {: .solution}
+{: .challenge}
+
+After you verified the desired dilepton mass cut is given, let's really start the computation by moving on, press `ENTER`.
 
 > ## What is the cross section?
 >
-> Define a process (e.g. from the process card above) and launch.
+> Take a close look at what MadGraph logs tell you.
 >
 > > ## Solution
 > >
@@ -248,11 +266,11 @@ Now, let's really start the computation by moving on, press `ENTER`.
 Type in `exit` in order to escape from MadGraph shell prompt.
 We will take a look at the output LHE file.
 ~~~bash
-less $GENMGPATH/ZtoEE/Events/run_01/unweighted_events.lhe.gz
+less $GENMGPATH/standalone-drellyan-mll50/Events/run_01/unweighted_events.lhe.gz
 ~~~
 {: .shell}
 
-Scroll down to look at the first event and exit with `q`.
+Scroll down to look at the first event (in order to exit, hit `q`).
 ~~~
 <event>
  5      1 +1.4934000e+03 9.10903200e+01 7.54677100e-03 1.30023300e-01
@@ -276,10 +294,10 @@ Scroll down to look at the first event and exit with `q`.
 > {: .solution}
 {: .challenge}
 
+## (2) Standalone : DY to ll (using particle containers)
 
-## (2) Standalone : Z boson to lepton pair (using particle containers)
-
-Now let's learn about particle containers, launch MadGraph shell prompt with `./bin/mg5_aMC` as we did above.
+Now let's learn about particle containers an easier way to deal with multiple particles.
+Launch MadGraph shell prompt with `./bin/mg5_aMC` as we did above.
 
 ~~~
 import model sm
@@ -311,23 +329,27 @@ display multiparticles
 ~~~
 {: .output}
 
-Now let's try making Z boson to lepton pair events (previously we only did electron pair, now we are using particle containers to inclusively give all possible dilepton contributions with muons and taus).
+Now let's try making the same DY process events but this time allowing all lepton flavors.
+Previously we only did electron pair, now we are about to use particle containers collect all possible dilepton contributions including muons and taus.
 ~~~
-generate p p > z, z > l+ l-
-output ZtoLL
+generate p p > l+ l-
+output standalone-drellyan-mll50-inclusive
 launch
 0
 set run_card nevents 5000
 set ebeam1 6800
 set ebeam2 6800
 set no_parton_cut
+set mmll 50
+set use_syst False
 0
 ~~~
 {: .output}
 
 > ## What is the cross section?
 >
-> We added 2 new Feynman diagrams (Z to muon pair and tau pair). How should the cross section add up from previous value 1493pb?
+> We added 2 new Feynman diagrams (decaying to muon pair and tau pair).
+> How should the cross section be adding up from previous value 1493pb?
 >
 > > ## Solution
 > >
@@ -342,7 +364,7 @@ set no_parton_cut
 
 Another way to generate multiple Feynman diagrams is by using `add process` as below.
 
-~~~output
+~~~
 import model sm
 generate p p > z, z > e+ e-
 add process p p > z, z > mu+ mu-
@@ -350,17 +372,62 @@ add process p p > z, z > ta+ ta-
 ~~~
 {: .output}
 
-## (2) Gridpack : Z boson to electron pair (producing gridpacks for CMS production)
+There is one more cool trick to use MadGraph.
+Take a look at `standalone/drellyan-mll10.config` file.
+
+~~~
+generate p p > e+ e-
+output standalone-drellyan-mll10
+launch
+set nevents 10000
+set no_parton_cut
+set mmll 10
+set use_syst False
+0
+~~~
+{: .output}
+
+Nothing has changed except that `set mmll 50` from above now became `set mmll 10`.
+We loosened the dilepton mass cut in this script.
+
+Try this :
+~~~bash
+./bin/mg5_aMC standalone/drellyan-mll10.config
+~~~
+{:.source}
+
+MadGraph reads the line and automatically passes the command to MadGraph prompt shell.
+
+Try this again :
+~~~bash
+./bin/mg5_aMC standalone/drellyan-mll4.config
+~~~
+{:.source}
+
+> ## What are the cross sections?
+>
+> How are the cross sections changing when compared to the case where 50GeV cut was given?
+>
+> > ## Solution
+> >
+> > ~~~
+> > Cross sections get larger as we loosen the cuts drastically (we will later see this through a plot).
+> > ~~~
+> {: .solution}
+{: .challenge}
+
+
+## (3) Gridpack : DY to ee producing gridpacks for CMS sample production)
 
 As we learned above, running standalone MadGraph is not so difficult.
-And often useful to do quick tests if you are curious about certain physics processes and its cross sections.
+And it is often useful to do quick tests if you are curious about certain physics processes and its cross sections.
 However, CMS relies on billions of events (we produce more than 50B events per year) for physics analysis.
 Could we handle all the necessary statistics by interactively running standalone MadGraph?
 What if the person who first produced 10M events for `Z->ee` process decides to leave CMS and we decide to make 40M events more?
 Can we ensure all the physics settings (which PDF set was chosen, how are kinematic cuts given, etc.) are all kept consistently?
 To mitigate such issues, CMS has developed a workflow called gridpacks which is maintained in [link](https://github.com/cms-sw/genproductions).
 Gridpacks are precompiled library that contains all necessary executables from MadGraph to produce LHE events.
-It is particularly useful for physics processes that require higher multiplicity of particles (we've only tried with `2->1->2` physics process, think of more complex physics processes e.g. `pp->zjjjj` which is `2->5` with 4 additional QCD particles denoted with `j`) as the precompilation greatly reduces the computing time.
+It is particularly useful for physics processes that require higher multiplicity of particles (we've only tried with `2->2` physics process, think of more complex physics processes e.g. `pp->eejjjj` which is `2->6` with 4 additional QCD particles denoted with `j`) as the precompilation greatly reduces the computing time.
 Here, instead of running MadGraph interactively, we will only give inputs to the CMS developed workflow and produce gridpacks and then see how they are the same or different compared to the standalone exercise.
 
 Before we begin, we first need to unset CMSSW environment settings (or open a new terminal) as it might interfere with the scripts in genproductions repository.
