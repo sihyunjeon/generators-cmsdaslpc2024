@@ -416,6 +416,42 @@ Try this again :
 > {: .solution}
 {: .challenge}
 
+Take a quick look at the plots.
+We will draw two plots (transverse momentum and mass of the dilepton system) with the samples we've just produced.
+
+~~~bash
+cd $GENTUTPATH/CMSSW_12_4_14_patch2/src
+cmsenv
+mkdir -p $GENPLOTPATH
+cd $GENPLOTPATH
+cp $GENTUTPATH/generators-cmsdaslpc2024-git/plotter/*.py ./
+python3 lhe-root-plotter.py
+~~~
+{:.source}
+
+> ## What can you infer from the plots?
+>
+> Why is the transverse momentum distribution only populating at 0?
+>
+> > ## Solution
+> >
+> > ~~~
+> > Transverse momentum peaks at 0 because the sum of intial quark's momentum only lies in z-axis direction.
+> > How do we acquire transversal direction momentum of the Z boson?
+> > ~~~
+> {: .solution}
+> 
+> What are the two peaks in the mass distribution?
+> > ## Solution
+> >
+> > ~~~
+> > Two peaks represent photon and Z boson.
+> > What will happen if we remove the cut on dilepton mass ('set mmll 0')?
+> > ~~~
+> >
+> {: .solution}
+{: .challenge}
+
 
 ## (3) Gridpack : DY to ee producing gridpacks for CMS sample production)
 
