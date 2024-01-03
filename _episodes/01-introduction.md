@@ -443,11 +443,11 @@ cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/gridpack ./
 ~~~
 {: .source}
 
-Take a look at the cards in `gridpack/ztoee-0j/` directory.
+Take a look at the cards in `gridpack/drellyan-mll50/` directory.
 There are two `.dat` files which are minimal inputs to make gridpacks.
 ~~~bash
-less gridpack/ztoee-0j/ztoee-0j_proc_card.dat
-less gridpack/ztoee-0j/ztoee-0j_run_card.dat 
+less gridpack/drellyan-mll50/drellyan-mll50_proc_card.dat
+less gridpack/drellyan-mll50/drellyan-mll50_run_card.dat
 ~~~
 {: .source}
 
@@ -468,7 +468,7 @@ This is CMS specific part of the code to keep consistent PDF setup among differe
 As there are many people running the tutorial at once, let's restrict the core usage to 2 again and then start the gridpack production.
 ~~~bash
 export NB_CORE=2
-./gridpack_generation.sh ztoee-0j gridpack/ztoee-0j/ pdmv
+./gridpack_generation.sh drellyan-mll50 gridpack/drellyan-mll50/ pdmv
 ~~~
 {: .source}
 
@@ -528,10 +528,12 @@ Defined multiparticle l- = e- mu-
 Defined multiparticle vl = ve vm vt
 Defined multiparticle vl~ = ve~ vm~ vt~
 Defined multiparticle all = g u c d s u~ c~ d~ s~ a ve vm vt e- mu- ve~ vm~ vt~ e+ mu+ t b t~ b~ z w+ h w- ta- ta+
-generate p p > z, z > e+ e-
+generate p p > e+ e-
 INFO: Checking for minimal orders which gives processes. 
 INFO: Please specify coupling orders to bypass this step. 
-INFO: Trying process: g g > z WEIGHTED<=2 @1  
+INFO: Trying process: g g > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: u u~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process has 2 diagrams 
 ~~~
 {: .output}
 
@@ -539,30 +541,32 @@ and finally giving out the computed cross sections.
 ~~~
   === Results Summary for run: pilotrun tag: tag_1 ===
 
-     Cross-section :   1730 +- 5.893 pb
+     Cross-section :   1836 +- 6.442 pb
      Nb of events :  0
 ~~~
 {: .output}
 
 > ## Why did the cross section change?
 >
-> You would notice that the cross section has changed from 1493pb to 1730pb. What would be the reasons although we ran on exact same physics process?
+> You would notice that the cross section has changed from 1493pb to 1836pb.
+> What would be the reasons although we ran on exact same physics process?
 >
 > > ## Solution
 > >
-> > Most importantly, different PDF set has been used (check by looking at `ztoee-0j/ztoee-0j_gridpack/work/gridpack/process/madevent/Cards/run_card.dat`). This will give you totally different assumptions on parton distributions in a proton.
+> > Most importantly, different PDF set has been used (check by looking at `drellyan-mll50/drellyan-mll50_gridpack/work/gridpack/process/madevent/Cards/run_card.dat`).
+> > This will give you totally different assumptions on parton distributions in a proton hence difference in the results.
 > > Other minor reasons for the difference could be the use of different MadGraph release version or perhaps different random seed.
 > > 
 > {: .solution}
 {: .challenge}
 
-Now try the same with different gridpack cards named `ztoee-0j-5FS`.
+Now try the same with different gridpack cards named `drellyan-mll50-5fs`.
 ~~~bash
-./gridpack_generation.sh ztoee-0j-5FS gridpack/ztoee-0j-5FS/ pdmv
+./gridpack_generation.sh drellyan-mll50-5fs gridpack/drellyan-mll50-5fs/ pdmv
 ~~~
 {:. shell}
 
-This will add a new contribution to the process that is `b b~ > z, z > e+ e-` to the calculation as it uses different UFO model that is `sm-no_b_mass`.
+This will add a new contribution to the process that is `b b~ > e+ e-` to the calculation as it uses different UFO model that is `sm-no_b_mass`.
 Strictly speaking, we are using the same UFO model but adding a restriction (bottom quarks are treated massless) to the model.
 Take a look at [restriction_card_tutorial](https://indico.cern.ch/event/239005/attachments/402547/559634/13_02_16_tutomg.pdf) from slide 24 for more information.
 
@@ -581,19 +585,44 @@ Defined multiparticle vl = ve vm vt
 Defined multiparticle vl~ = ve~ vm~ vt~
 Pass the definition of 'j' and 'p' to 5 flavour scheme.
 Defined multiparticle all = g u c d s b u~ c~ d~ s~ b~ a ve vm vt e- mu- ve~ vm~ vt~ e+ mu+ t t~ z w+ h w- ta- ta+
-generate p p > z, z > e+ e-
-
-INFO: Trying process: b b~ > z WEIGHTED<=2 @1  
-INFO: Process has 1 diagrams 
-INFO: Process b~ b > z added to mirror process b b~ > z 
+generate p p > e+ e-
+INFO: Checking for minimal orders which gives processes. 
+INFO: Please specify coupling orders to bypass this step. 
+INFO: Trying process: g g > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: u u~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process has 2 diagrams 
+INFO: Trying process: u c~ > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: c u~ > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: c c~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process has 2 diagrams 
+INFO: Trying process: d d~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process has 2 diagrams 
+INFO: Trying process: d s~ > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: d b~ > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: s d~ > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: s s~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process has 2 diagrams 
+INFO: Trying process: s b~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process u~ u > e+ e- added to mirror process u u~ > e+ e- 
+INFO: Process c~ c > e+ e- added to mirror process c c~ > e+ e- 
+INFO: Process d~ d > e+ e- added to mirror process d d~ > e+ e- 
+INFO: Trying process: d~ b > e+ e- WEIGHTED<=4 @1  
+INFO: Process s~ s > e+ e- added to mirror process s s~ > e+ e- 
+INFO: Trying process: s~ b > e+ e- WEIGHTED<=4 @1  
+INFO: Trying process: b b~ > e+ e- WEIGHTED<=4 @1  
+INFO: Process has 2 diagrams 
+INFO: Process b~ b > e+ e- added to mirror process b b~ > e+ e- 
+5 processes with 10 diagrams generated in 0.032 s
+Total: 5 processes with 10 diagrams
+output drellyan-mll50-5fs
 ~~~
 {:. output}
 
-Now you would get the following, somewhat increased cross section 1795pb compared to the previous example 1740pb.
+Now you would get the following, somewhat increased cross section 1903pb compared to the previous run 1836pb.
 ~~~
   === Results Summary for run: pilotrun tag: tag_1 ===
 
-     Cross-section :   1795 +- 6.29 pb
+     Cross-section :   1903 +- 6.669 pb
      Nb of events :  0
 ~~~
 {:. output}
@@ -604,19 +633,19 @@ Now you would get the following, somewhat increased cross section 1795pb compare
 >
 > > ## Solution
 > >
-> > Yes, we now have 5 flavor quarks in the proton which was 4 in the previous example by adding up the bottom quark contributions.
-> > So we have a new contribution that is `b b~ > z, z > e+ e-`.
+> > We now have 5 flavor quarks in the proton which was 4 in the previous example by adding up the bottom quark contributions.
+> > So we have a new contribution that is `b b~ > e+ e-`.
 > > 
 > {: .solution}
 >
 > ## But why did it not scale up so much?
 >
-> When we tried out `p p > z, z > e+ e-` and `p p > z, z > l+ l-` with standalone MadGraph, the cross sections was roughly 3 times larger.
+> When we ran `p p > e+ e-` and `p p > l+ l-` with standalone MadGraph, the cross sections was roughly 3 times larger.
 > When we consider 4 (udcs) and 5 (udcsb) flavor schemes of proton should it not be 5/4 times larger?
 >
 > > ## Solution
 > > 
-> >  No, keep in mind that proton consists of two up quarks and one down antiquark which are valence quarks.
+> > No, keep in mind that proton consists of two up quarks and one down antiquark which are valence quarks.
 > > The rest are sea quark contributions, smaller in PDF.
 > > Hence, the amount of increment coming from bottom quark contributions are not so large.
 > >
@@ -631,8 +660,8 @@ To start with, copy and paste the gridpack to a new temporary directory and unta
 
 ~~~bash
 mkdir test
-cp ../ztoee-012j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz ./
-tar -xvf ztoee-012j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
+cp ../drellyan-mll50-5fs_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz ./
+tar -xvf drellyan-mll50-5fs_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
 ~~~
 {:. shell}
 
@@ -650,10 +679,10 @@ After the run has finished, LHE file with a name `cmsgrid_final.lhe` has been pr
 It's easy to reproduce more statistics as much as we need than running from scratch with standalone MadGraph.
 
 The first step of generator tutorial has finished.
-Before moving on to the next step, let's first run below as it takes some time to finish.
+Before moving on to the next step, let's first run below as it takes a bit more time to finish.
 ~~~bash
 cd -
-./gridpack_generation.sh ztoee-012j gridpack/ztoee-012j/ pdmv
+./gridpack_generation.sh drellyan-mll50-01j gridpack/drellyan-mll50-01j/ pdmv
 ~~~
 {:. shell}
 
