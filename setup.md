@@ -7,6 +7,7 @@ You can run `echo "$SHELL"` to check that you are indeed running bash.
 export GENTUTPATH=${HOME}/nobackup/GENTUTORIAL
 export GENMGPATH=${GENTUTPATH}/standalone-tut/MG5_aMC_v2_9_18
 export GENGRIDPACKPATH=${GENTUTPATH}/gridpack-tut/genproductions
+export GENSHOWERPATH=${GENTUTPATH}/shower-tut
 ~~~
 {: .source}
 First create the Generator Tutorial session directory.
