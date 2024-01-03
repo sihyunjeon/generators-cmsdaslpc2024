@@ -5,7 +5,7 @@ The following commands are tested on the LPC cluster, using the bash shell.
 You can run `echo "$SHELL"` to check that you are indeed running bash.
 ~~~bash
 export GENTUTPATH=${HOME}/nobackup/GENTUTORIAL
-export GENMGPATH=${GENTUTPATH}/standalone-tut/MG5_aMC_v3_5_2
+export GENMGPATH=${GENTUTPATH}/standalone-tut/MG5_aMC_v2_9_18
 export GENGRIDPACKPATH=${GENTUTPATH}/gridpack-tut/genproductions
 ~~~
 {: .source}
