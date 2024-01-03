@@ -52,6 +52,7 @@ Return back to the home path to start with standalone tutorial.
 cd ${GENTUTPATH}/standalone-tut/MG5_aMC_v2_9_18
 cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/standalone ./
 ./bin/mg5_aMC standalone/setup.config
+./bin/mg5_aMC standalone/install.config &> install.log &
 ~~~
 {: .source}
 
