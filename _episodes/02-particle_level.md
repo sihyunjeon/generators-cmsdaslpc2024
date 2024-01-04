@@ -120,7 +120,7 @@ produced_lhe  0 nevt  100 submitting_event  100  remaining_event  100
 run.sh 100 2345670
 Now generating 100 events with random seed 2345670 and granularity 1
 ~~~
-{:. output}
+{: .output}
 
 Reweight with additional PDF sets given for possible systematic sources.
 
@@ -146,7 +146,7 @@ INFO: #*************************************************************************
 # PDF 42930 : 1837.5192582008478
 #***************************************************************************
 ~~~
-{:. output}
+{: .output}
 
 And then Pythia8 is launched with the LHE file created given as an input.
 It first prints out the LHE information as we saw directly in the LHE file.
@@ -197,7 +197,7 @@ Remember that parton shower goes lower and lower from the hard process until cer
     20         21  (g)                -33    18    19    67    67   507   506     -3.816      2.200    -23.877     24.280      0.000
     21         21  (g)                -33    18    19    68    68   505   507      3.816     -2.200      1.018      4.521      0.000
 ~~~
-{:. output}
+{: .output}
 
 After 1 event information is printed out, 100 events get processed and finally reports the cross section.
 
@@ -222,7 +222,7 @@ After filter: final equivalent lumi for 1M events (1/fb) = 5.391e-01 +- 5.179e-0
 
 =============================================
 ~~~
-{:. output}
+{: .output}
 
 
 > ## How did the cross section change after parton shower?
@@ -248,7 +248,7 @@ For more realistic and reliable physics modeling of hard jets, for example in DY
 generate p p > e+ e- @0
 add process p p > e+ e- j @1
 ~~~
-{:. output}
+{: .output}
 
 With such syntaxes, MadGraph produces DY process with 0 and 1 hard jet in the event.
 If this sample goes through parton shower, as some portion of events (dentoed with `@1`) readily involves hard jet, it would be better at describing DY process with hard jet.
@@ -271,7 +271,7 @@ cd jet_merging
 cp $GENGRIDPACKPATH/bin/MadGraph5_aMCatNLO/drellyan-mll50-01j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz ./
 tar -xvf drellyan-mll50-01j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
 ~~~
-{:. source}
+{: .source}
 
 Take a look at the cards in `InputCards` directory.
 Most notably, `run_card.dat` had a different setting compared to the other gridpacks we've produced.
@@ -282,7 +282,7 @@ Most notably, `run_card.dat` had a different setting compared to the other gridp
 #*********************************************************************
   1     = ickkw ! 0 no matching, 1 MLM, 2 CKKW matching
 ~~~
-{:. output}
+{: .output}
 
 This flag tells MadGraph that the LHE files we are going to produce will later be going through jet merging in order to avoid double countings.
 
@@ -292,7 +292,7 @@ This flag tells MadGraph that the LHE files we are going to produce will later b
 #*********************************************************************
   10.0  = xqcut ! minimum kt jet measure between partons
 ~~~
-{:. output}
+{: .output}
 
 When jet merging is turned on, `xqcut` needs to be set which presample the events for efficient jet merging.
 Remember that some portion of events will be later discarded and never going to be used.
@@ -333,7 +333,7 @@ You will notice huge block of new lines are added to `drellyan-mll50-01j.py`.
             'TimeShower:mMaxGamma = 4.0'
         ),
 ~~~
-{:. output}
+{: .output}
 
 Most of the lines could be treated as template for jet merging samples using MadGraph at LO and Pythia8 (for further information, (link)[https://pythia.org/latest-manual/JetMatching.html] and (link)[http://hep.ucsb.edu/people/cag/Matching.pdf] would be useful).
 Here `JetMatching:qCut = 19.`, line defines the threshold to decide whether the event should be accepted or not.
@@ -357,7 +357,7 @@ cmsDriver.py Configuration/GenProduction/python/drellyan-mll50-01j.py \
     -n 1000
 cmsRun run_drellyan-mll50-01j.py
 ~~~
-{:. source}
+{: .source}
 
 Cross sections before and after jet merging will be reported as below.
 
@@ -383,7 +383,7 @@ After filter: final equivalent lumi for 1M events (1/fb) = 5.449e-01 +- 1.388e-0
 
 =============================================
 ~~~
-{:. output}
+{: .output}
 
 First two lines, `Process` denoted `0` and `1` are indicators for `p p > e+ e-` and `p p > e+ e- j` processes, respectively.
 For `0`, 623 events were `tried` and 467 passed, which means jet merging procedure accepted 467 events out of 623 events from `0`.
