@@ -738,7 +738,7 @@ cd $GENGRIDPACKPATH/bin/MadGraph5_aMCatNLO
 > For more constructive iterations and feedbacks, provide your inputs (`.dat` files you used to generate gridpacks) and all possible error logs.
 > Also as you all now know how to run standalone MadGraph, test your gridpack inputs with standdalone MadGraph first.
 > If it works in standalone run but not in gridpack, it likely could be genproductions issue.
-> If it does not work, it likely could be the core MadGraph issue.
+> If it does not work, it likely could be the core MadGraph issue or some mismodeling of the process.
 > 
 {: .callout}
 
