@@ -93,17 +93,18 @@ launch
 After MadGraph found all the Feynman diagrams that you targetted, you can see that MadGraph asking you several questions as shown below.
 Press `tab` to turn off the timer (otherwise, MadGraph will move on by itself after 60 seconds).
 ~~~
-/================ Description =================|=========== values ===========|====== other options ======\
-| 1. Choose the shower/hadronization program   |   shower = Not Avail.        |   Please install module   |
-| 2. Choose the detector simulation program    | detector = Not Avail.        |   Please install module   |
-| 3. Choose an analysis package (plot/convert) | analysis = Not Avail.        |   Please install module   |
-| 4. Decay onshell particles                   |  madspin = OFF               |   ON|onshell|full         |
-| 5. Add weights to events for new hypp.       | reweight = OFF               |   ON                      |
-\=========================================================================================================/
+/===========================================================================\
+| 1. Choose the shower/hadronization program     shower = Not Avail.        |
+| 2. Choose the detector simulation program    detector = Not Avail.        |
+| 3. Choose an analysis package (plot/convert) analysis = ExRoot            |
+| 4. Decay onshell particles                    madspin = OFF               |
+| 5. Add weights to events for new hypp.       reweight = Not Avail.        |
+\===========================================================================/
 ~~~
 {: .output}
-As we did not install any other `shower`, `detector`, or `analysis` tools, all are in `Not Avail.` state.
-We will learn later how showering will be done under CMSSW and run brief analysis code to analyze the events we produce from this tutorial.
+As we did not install any other `shower`, `detector`, they are in `Not Avail.` state.
+We will learn later how showering will be done under CMSSW and run brief analyzing/histogramming code to analyze the events we produce from this tutorial.
+ExRootAnalysis (`analysis = ExRoot`) is installed to later use it to convert LHE files to ROOT files and draw histograms using it.
 `madspin` will be demonstrated later using top pair process example in the third (optional) exercise.
 `reweight` is out of scope for this tutorial although it is quite useful for certain BSM scenarios.
 
@@ -255,10 +256,10 @@ After you verified the desired dilepton mass cut is given, let's really start th
 > > ## Solution
 > >
 > > ~~~
-> >   === Results Summary for run: run_01 tag: tag_1 ===
-> > 
-> >      Cross-section :   1493 +- 1.315 pb
-> >      Nb of events :  5000
+> >  === Results Summary for run: run_01 tag: tag_1 ===
+> >
+> >     Cross-section :   1584 +- 1.159 pb
+> >     Nb of events :  10000
 > > ~~~
 > {: .solution}
 {: .challenge}
@@ -356,7 +357,7 @@ set use_syst False
 > > ~~~
 > >   === Results Summary for run: run_01 tag: tag_1 ===
 > > 
-> >      Cross-section :   4473 +- 5.708 pb
+> >      Cross-section :   4748 +- 5.361 pb
 > >      Nb of events :  5000
 > > ~~~
 > {: .solution}
@@ -411,13 +412,13 @@ Try this again :
 > > ## Solution
 > >
 > > ~~~
-> > Cross sections get larger as we loosen the cuts drastically (we will later see this through a plot).
+> > Cross sections get larger as we loosen the cuts drastically (we will later see this through a histogram).
 > > ~~~
 > {: .solution}
 {: .challenge}
 
 Take a quick look at the plots.
-We will draw two plots (transverse momentum and mass of the dilepton system) with the samples we've just produced.
+We will draw two histograms (transverse momentum and mass of the dilepton system) with the samples we've just produced.
 
 ~~~bash
 cd $GENTUTPATH/CMSSW_12_4_14_patch2/src
