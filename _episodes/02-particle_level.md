@@ -239,96 +239,159 @@ After filter: final equivalent lumi for 1M events (1/fb) = 5.391e-01 +- 5.179e-0
 > {: .solution}
 {: .challenge}
 
-## (2) Running Pythia8 interface in CMSSW
+## (2) Jet merging samples
 
+Hard process calculation has advantage in modeling of hard jets and heavy particle decays while parton shower is great for describing collinear and soft emissions.
+For more realistic and reliable physics modeling of hard jets, for example in DY events, MadGraph can be used as below.
 
-
-
-For this exercise, we will use CMSSW_10_6_19 which should already be set up.
-The central executable of the [CMSSW event processing model](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookCMSSWFramework) is `cmsRun` which is controlled through a python configuration file.
-The `cmsDriver.py` tool can be used to create configuration files based on the campaign, data tiers and a configuration fragment for the parton shower. #FIXME
-
-> ## Attention
-> Note that in order for the fragments to be usable, they must be located in a CMSSW package directory structure like below and you must build your CMSSW release area after adding or changing the file.
-> Many people have spent hours trying to figure out why their config fragment either does not work at all or does not what it should because of this.
-> **Always remember the folder structure. Always remember to build.** #FIXME
-> 
-{: .callout}
-
-Lets get back to CMSSW release we first used in order to run the parton shower step with Pythia8.
-
-~~~bash
-cd $GENTUTPATH/CMSSW_12_4_14_patch2/src
-cmsenv
-mkdir -p Configuration/GenProduction/python/
-cp $GENTUTPATH/generators-cmsdaslpc2024-git/fragment/*.py Configuration/GenProduction/python/
-scram b
-mkdir -p $GENSHOWERPATH
-cd $GENSHOWERPATH
 ~~~
-{: .source}
+generate p p > e+ e- @0
+add process p p > e+ e- j @1
+~~~
+{:. output}
 
-Now it's time to use `cmsDriver.py` to produce a config file (called `config.py` in this example), and then run it with `cmsRun`.
-There are many options, the most important ones defining the produced data tiers (GEN and LHE), the era and conditions, as well as the file names.
-As a first step we want to just create the config file to run over 1000 events (`-n 1000`) and not immediately execute it (`--no_exec`).
-Afterwards, we run with `cmsRun config.py`.
-Some more details on the options are given on this [twiki page](https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookGenIntro). #FIXME
+With such syntaxes, MadGraph produces DY process with 0 and 1 hard jet in the event.
+If this sample goes through parton shower, as some portion of events (dentoed with `@1`) readily involves hard jet, it would be better at describing DY process with hard jet.
+However consider the event `@0` emitting QCD particles from initial state radiation that could possibly form a jet that is hard enough.
+Such phase space inherently possesses a problem of double counting as "DY with hard jet" event could come from both `@0` and `@1`.
+To mitigate such issues and remove double counting of phase space contributions, jet merging technique is used.
+Jet merging is set up with an artificial cut threshold called jet merging scale.
+This scale decides whether an event will be accepted or not from both `@0` and `@1`.
+Finally, only accepted events from the two processes will be merged and form one sample.
+Very roughly, jet merging scale can be thought as the momentum of a jet.
+If a jet in the event is hard enough above the threshold, events from `@0` are rejected while only accepting from `@1`.
+On the other hand, if a jet in the event is not too hard below the threshold, events from `@0` are only accepted while rejecting `@1`.
+
+Now let's take a look at the gridpack we produced before we started the parton shower exercises.
+~~~bash
+ls $GENGRIDPACKPATH/bin/MadGraph5_aMCatNLO/drellyan-mll50-01j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
+cd $GENSHOWERPATH
+mkdir jet_merging
+cd jet_merging
+cp $GENGRIDPACKPATH/bin/MadGraph5_aMCatNLO/drellyan-mll50-01j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz ./
+tar -xvf drellyan-mll50-01j_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
+~~~
+{:. source}
+
+Take a look at the cards in `InputCards` directory.
+Most notably, `run_card.dat` had a different setting compared to the other gridpacks we've produced.
+
+~~~
+#*********************************************************************
+# Matching - Warning! ickkw > 1 is still beta
+#*********************************************************************
+  1     = ickkw ! 0 no matching, 1 MLM, 2 CKKW matching
+~~~
+{:. output}
+
+This flag tells MadGraph that the LHE files we are going to produce will later be going through jet merging in order to avoid double countings.
+
+~~~
+#*********************************************************************
+# Jet measure cuts                                                   *
+#*********************************************************************
+  10.0  = xqcut ! minimum kt jet measure between partons
+~~~
+{:. output}
+
+When jet merging is turned on, `xqcut` needs to be set which presample the events for efficient jet merging.
+Remember that some portion of events will be later discarded and never going to be used.
+So there is no point of producing events that involve jets with too low energy scale at this LHE level since these will likely be removed.
+
+Try producing 100 events using this gridpack as we did before with command `./runcmsgrid.sh 100 1 1`.
+
+> ## What is the cross section?
+> 
+> MadGraph reported `# original cross-section: 2928.1100000000024`, 2928pb which is significantly larger than previous values that were below 2000pb.
+> How can this be explained?
+> 
+> > ## Solution
+> > The cross section reported from MadGraph is before we run the parton shower.
+> > During parton shower, jet merging will be performed and thus some portion of events will be discared.
+> > This will be reflected into overall normalization and the cross section will be smaller than what we now see.
+> > 
+> {: .solution}
+{: .challenge}
+
+Before running the parton shower, let's look at the pythia fragment that should be used for the parton shower with jet merging.
+Compare `$GENTUTPATH/CMSSW_12_4_14_patch2/src/Configuration/GenProduction/python/drellyan-mll50-01j.py` and the one we used earlier `$GENTUTPATH/CMSSW_12_4_14_patch2/src/Configuration/GenProduction/python/drellyan-mll50.py`.
+You will notice huge block of new lines are added to `drellyan-mll50-01j.py`.
+
+~~~
+        processParameters = cms.vstring(
+            'JetMatching:setMad = off',
+            'JetMatching:scheme = 1',
+            'JetMatching:merge = on',
+            'JetMatching:jetAlgorithm = 2',
+            'JetMatching:etaJetMax = 5.',
+            'JetMatching:coneRadius = 1.',
+            'JetMatching:slowJetPower = 1',
+            'JetMatching:doShowerKt = off',
+            'JetMatching:qCut = 19.',
+            'JetMatching:nQmatch = 4',
+            'JetMatching:nJetMax = 1',
+            'TimeShower:mMaxGamma = 4.0'
+        ),
+~~~
+{:. output}
+
+Most of the lines could be treated as template for jet merging samples using MadGraph at LO and Pythia8 (for further information, (link)[https://pythia.org/latest-manual/JetMatching.html] and (link)[http://hep.ucsb.edu/people/cag/Matching.pdf] would be useful).
+Here `JetMatching:qCut = 19.`, line defines the threshold to decide whether the event should be accepted or not.
+Again, although not exact, one can think of this as the threshold for the momentum scale of a jet in the event.
+If a jet momentum in the event is above 19GeV, event is only accepted from `p p > e+ e- j` type of events.
+If a jet momentum in the event is below 19GeV, event is only accepted from `p p > e+ e-` type of events.
+
+Now let's give `-n 1000` as an option to `cmsDriver.py`.
+This will first create an LHE file with 1000 events and this will be given as an input for Pythia8.
 
 ~~~bash
-cmsDriver.py Configuration/GenProduction/python/drellyan-mll50.py \
-    --python_filename run_drellyan-mll50.py \
+cmsDriver.py Configuration/GenProduction/python/drellyan-mll50-01j.py \
+    --python_filename run_drellyan-mll50-01j.py \
     --eventcontent NANOAOD \
     --datatier NANOAOD \
-    --fileout file:drellyan-mll50.root \
+    --fileout file:drellyan-mll50-01j.root \
     --conditions auto:mc \
     --step LHE,GEN,NANOGEN \
     --no_exec \
     --mc \
-    -n 100
-cmsRun run_drellyan-mll50.py
+    -n 1000
+cmsRun run_drellyan-mll50-01j.py
 ~~~
-{: .source}
+{:. source}
 
-See how many more particles are coming out from a single event trough parton shower
+Cross sections before and after jet merging will be reported as below.
 
 ~~~
- --------  PYTHIA Event Listing  (complete event)  ---------------------------------------------------------------------------------
- 
-    no         id  name            status     mothers   daughters     colours      p_x        p_y        p_z         e          m 
-     0         90  (system)           -11     0     0     0     0     0     0      0.000      0.000      0.000  13600.000  13600.000
-     1       2212  (p+)               -12     0     0   258     0     0     0      0.000      0.000   6800.000   6800.000      0.938
-     2       2212  (p+)               -12     0     0   259     0     0     0      0.000      0.000  -6800.000   6800.000      0.938
-     3          4  (c)                -21     7     7     5     6   501     0      0.000      0.000    640.636    640.636      0.000
-     4         -4  (cbar)             -21     8     0     5     6     0   501     -0.000     -0.000     -2.746      2.746      0.000
-     5        -11  (e+)               -23     3     4     9     9     0     0     40.120      6.785    397.043    399.123      0.001
-     6         11  (e-)               -23     3     4    10    10     0     0    -40.120     -6.785    240.847    244.260      0.001
-     7          4  (c)                -42    12    12     3     3   501     0      0.000     -0.000    640.636    640.636      0.000
-     8         -4  (cbar)             -41    13     0    11     4     0   502      0.000      0.000     -6.150      6.150      0.000
-     9        -11  (e+)               -44     5     5    14    14     0     0     46.962     13.127    482.093    484.553      0.001
-    10         11  (e-)               -44     6     6    15    15     0     0    -28.891      3.624    102.986    107.023      0.001
-    11         21  (g)                -43     8     0    16    16   501   502    -18.071    -16.751     49.407     55.211      0.000
-    12          4  (c)                -42    18     0     7     7   501     0      0.000      0.000    640.636    640.636      0.000
-    13         -4  (cbar)             -41    19    19    17     8     0   503     -0.000     -0.000    -10.317     10.317      0.000
-    14        -11  (e+)               -44     9     9    20    20     0     0     48.906     15.431    513.822    516.375      0.001
-    15         11  (e-)               -44    10    10    21    21     0     0    -25.702      7.404     83.280     87.470      0.001
-    16         21  (g)                -44    11    11    22    22   501   502    -13.486    -11.316     22.717     28.740      0.000
-    17         21  (g)                -43    13     0    23    23   502   503     -9.718    -11.519     10.500     18.368      0.000
-    18         21  (g)                -41   115   115    24    12   501   504      0.000      0.000    841.803    841.803      0.000
-    19         -4  (cbar)             -42   160   160    13    13     0   503      0.000      0.000    -10.317     10.317      0.000
-    20        -11  (e+)               -44    14    14   257   257     0     0     55.623     16.577    519.721    522.951      0.001
-    21         11  (e-)               -44    15    15   255   256     0     0    -24.588      7.594     84.493     88.325      0.001
-    22         21  (g)                -44    16    16    97    97   501   502    -13.150    -11.259     23.163     28.918      0.000
-    23         21  (g)                -44    17    17    95    96   502   503     -9.530    -11.487     10.796     18.421      0.000
-    24         -4  (cbar)             -43    18     0   149   150     0   504     -8.354     -1.425    193.314    193.505      1.500
-    25         21  (g)                -31    29    29    27    28   505   506      0.000      0.000   2689.184   2689.184      0.000
-    26         21  (g)                -31    30     0    27    28   507   508      0.000      0.000     -3.370      3.370      0.000
-    27         21  (g)                -33    25    26    31    31   505   508      0.657      8.705   2683.510   2683.524      0.000
-    28         21  (g)                -33    25    26    32    32   507   506     -0.657     -8.705      2.304      9.029      0.000
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+Overall cross-section summary 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Process		xsec_before [pb]		passed	nposw	nnegw	tried	nposw	nnegw 	xsec_match [pb]			accepted [%]	 event_eff [%]
+0		1.833e+03 +/- 1.197e+01		467	467	0	623	623	0	1.374e+03 +/- 3.305e+01		75.0 +/- 1.7	75.0 +/- 1.7
+1		1.099e+03 +/- 1.713e+01		159	159	0	377	377	0	4.636e+02 +/- 2.887e+01		42.2 +/- 2.5	42.2 +/- 2.5
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+Total		2.932e+03 +/- 2.090e+01		626	626	0	1000	1000	0	1.835e+03 +/- 4.673e+01		62.6 +/- 1.5	62.6 +/- 1.5
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Before matching: total cross section = 2.932e+03 +- 2.090e+01 pb
+After matching: total cross section = 1.835e+03 +- 4.673e+01 pb
+Matching efficiency = 0.6 +/- 0.0   [TO BE USED IN MCM]
+Filter efficiency (taking into account weights)= (626) / (626) = 1.000e+00 +- 0.000e+00
+Filter efficiency (event-level)= (626) / (626) = 1.000e+00 +- 0.000e+00    [TO BE USED IN MCM]
+
+After filter: final cross section = 1.835e+03 +- 4.673e+01 pb
+After filter: final fraction of events with negative weights = 0.000e+00 +- 0.000e+00
+After filter: final equivalent lumi for 1M events (1/fb) = 5.449e-01 +- 1.388e-02
+
+=============================================
 ~~~
-{: .output}
+{:. output}
 
-Let's analyze the events using simple pyROOT script.
+First two lines, `Process` denoted `0` and `1` are indicators for `p p > e+ e-` and `p p > e+ e- j` processes, respectively.
+For `0`, 623 events were `tried` and 467 passed, which means jet merging procedure accepted 467 events out of 623 events from `0`.
+For `1`, jet merging procedure accepted 159 events out of 377 events.
+Note that the sum of `tried` is 1000 which was the given input with `-n 1000` at the LHE level.
+After jet merging has been done, events are discarded and the final cross section is reported `After filter: final cross section = 1.835e+03 +- 4.673e+01 pb` 1835pb which is dropped from the LHE given value `Before matching: total cross section = 2.932e+03 +- 2.090e+01 pb` 2932 pb.
 
-For quick studies it can be beneficial to do quick studies on MC truth level.
-To facilitate these studies one can quickly create flat root trees that are similar to NanoAOD, but only contain generator intormation, called NanoGEN.
+## (3) Analyzing generator level information (after parton shower)
+
+
 
