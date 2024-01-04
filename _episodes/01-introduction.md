@@ -697,6 +697,7 @@ To start with, copy and paste the gridpack to a new temporary directory and unta
 
 ~~~bash
 mkdir test
+cd test
 cp ../drellyan-mll50-5fs_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz ./
 tar -xvf drellyan-mll50-5fs_slc7_amd64_gcc10_CMSSW_12_4_8_tarball.tar.xz
 ~~~
@@ -718,7 +719,7 @@ It's easy to reproduce more statistics as much as we need than running from scra
 The first step of generator tutorial has finished.
 Before moving on to the next step, let's first run below as it takes a bit more time to finish.
 ~~~bash
-cd -
+cd $GENGRIDPACKPATH/bin/MadGraph5_aMCatNLO
 ./gridpack_generation.sh drellyan-mll50-01j gridpack/drellyan-mll50-01j/ pdmv
 ~~~
 {:. shell}
