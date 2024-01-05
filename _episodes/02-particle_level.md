@@ -239,6 +239,38 @@ After filter: final equivalent lumi for 1M events (1/fb) = 5.391e-01 +- 5.179e-0
 > {: .solution}
 {: .challenge}
 
+Previously, we saw the histogram of dilepton system's transverse momentum using LHE information.
+And we claimed it only being populated at 0GeV was not a physical distribution.
+After parton shower, using the NanoGEN sample, let's see how the distribution changed.
+Due to time constraints, tutors prepared samples with 40000 events in `/tmp/GENTUTORIAL/drellyan-mll50.root` for plotting purposes.
+
+~~~bash
+cd $GENPLOTPATH
+python3 nanogen-plotter.py
+~~~
+{: .source}
+
+> ## How did the distribution change?
+> 
+> Where did the dilepton system acquire transverse momentum from?
+> 
+> > ## Solution
+> > Incoming partons from protons also go through parton shower which is named "initial state radiation (ISR)".
+> > 
+> {: .solution}
+>
+> ## What is GenDressedLepton?
+>
+> What happens to leptons during parton shower?
+> Are leptons kept stable during parton shower as it does not participate in strong interactions?
+>
+> > ## Solution
+> > Parton shower, despite its choice of the naming, "parton", also includes QED shower such as `e -> e gamma`.
+> > Dressed leptons (`GenDressedLepton` collection in NanoGEN) is an object formed of the charged lepton and photons that are close to it.
+> 
+{: .challenge}
+
+
 ## (2) Jet merging samples
 
 Hard process calculation has advantage in modeling of hard jets and heavy particle decays while parton shower is great for describing collinear and soft emissions.
