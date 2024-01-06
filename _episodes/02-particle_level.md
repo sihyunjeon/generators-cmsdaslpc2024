@@ -267,7 +267,8 @@ python3 nanogen-plotter.py
 > > ## Solution
 > > Parton shower, despite its choice of the naming, "parton", also includes QED shower such as `e -> e gamma`.
 > > Dressed leptons (`GenDressedLepton` collection in NanoGEN) is an object formed of the charged lepton and photons that are close to it.
-> 
+> {: .solution}
+>
 {: .challenge}
 
 
