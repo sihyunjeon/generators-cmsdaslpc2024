@@ -360,6 +360,7 @@ set use_syst False
 > >      Cross-section :   4748 +- 5.361 pb
 > >      Nb of events :  5000
 > > ~~~
+> > {:.output}
 > {: .solution}
 {: .challenge}
 
