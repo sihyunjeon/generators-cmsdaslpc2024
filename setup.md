@@ -58,4 +58,11 @@ cp -r ${GENTUTPATH}/generators-cmsdaslpc2024-git/standalone ./
 ~~~
 {: .source}
 
+> In case you escape from the terminal and open a new one, execute below before starting the exercises.
+> ~~~bash
+> cd ${HOME}/nobackup/GENTUTORIAL/generators-cmsdaslpc2024-git/
+> source setup.sh
+> ~~~
+> {: .source}
+
 {% include links.md %}
