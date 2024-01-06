@@ -245,10 +245,8 @@ INFO: Event 46/75 :  6.5s
 >
 > > ## Solution
 > >
-> > ~~~
 > > 8.5pb (from 684.7 x 11% x 11%)
-> > ~~~
-> > {: .solution}
+> {: .solution}
 > ## How can we make a sample that yields `mu+`, `vm`, and this time, two quark jets (hadronically decaying `w-`)
 >
 > > ## Solution
@@ -260,4 +258,170 @@ INFO: Event 46/75 :  6.5s
 > {: .solution}
 > 
 {: .challenge}
+
+# Interfacing BSM UFO model files
+
+Let's take a look at how BSM samples for search type of analyses gets produced.
+We will pick one simple example, a hypothetical heavy gauge boson that is called W' particle.
+
+~~~
+import model WEff_UFO
+display particles
+generate p p > wp+, wp+ > e+ ve
+add process p p > wp-, wp- > e- ve~
+output WprimeToENu
+~~~
+{: .output}
+
+
+> ## How can we make the syntax simpler using particle containers?
+>
+> How can we write `generate p p > wp+, wp+ > e+ ve` and `add process p p > wp-, wp- > e- ve~` in a simpler way?
+>
+> > ## Solution
+> > ~~~
+> > define wprime = wp+ wp-
+> > define leptons = e+ e- ve ve~
+> > generate p p > wprime, wprime > leptons leptons
+> > ~~~
+> > {: .output}
+> > This will find all possible Feynman diagrams with given particle combinations.
+> > 
+> {: .solution}
+> 
+{: .challenge}
+
+As we are missing right-handed interactions for W bosons in the SM, a lot of BSM scenarios predict the W' boson that is heavier in mass (thus, we couldn't find it yet) but possesses the ability to interact with right-handed couplings.
+As we do not know how large the particle's mass is, we test many different scenarios (BSM parameters), for example, different masses, decay channels, coupling strengths.
+We will now see how such BSM parameters can be set in MadGraph.
+
+~~~
+launch
+0
+~~~
+{: .output}
+
+And press `tab` to turn off the timer.
+
+Take a look at the parameter card by hitting `1`.
+
+Now you will see there is a clear difference in the parameter settings when compared to the `sm` model file we've been using.
+Here, we will only be focusing on the mass of W' `MWp` and the right-handed coupling strength `kR`.
+In addition, you will also need to keep in mind that widths of the W' `wwp` should be changing based on how you choose your BSM parameters.
+
+~~~
+###################################
+## INFORMATION FOR MASS
+###################################
+Block mass
+    1 5.040000e-03 # MD
+    2 2.550000e-03 # MU
+    3 1.010000e-01 # MS
+    4 1.270000e+00 # MC
+    5 4.700000e+00 # MB
+    6 1.720000e+02 # MT
+   11 5.110000e-04 # Me
+   13 1.056600e-01 # MMU
+   15 1.777000e+00 # MTA
+   23 9.118760e+01 # MZ
+   25 1.250000e+02 # MH
+   34 1.000000e+03 # MWp
+
+...
+
+###################################
+## INFORMATION FOR WPCOUP
+###################################
+Block wpcoup
+    1 0.000000e+00 # kL
+    2 1.000000e+00 # kR
+
+...
+
+###################################
+## INFORMATION FOR DECAY
+###################################
+DECAY   6 1.508336e+00 # WT
+DECAY  23 2.495200e+00 # WZ
+DECAY  24 2.085000e+00 # WW
+DECAY  25 4.070000e-03 # WH
+DECAY  34 1.000000e+01 # WWp
+~~~
+{: .output}
+
+You can see that the mass of W' is now set to 1000GeV, right-handed coupling strength is set to 1.0, and the width of W' is given with 10GeV.
+You can change the BSM parameters, maybe mass to 2000GeV and coupling strength to 0.1 by doing below.
+
+~~~
+set param_card mwp 2000
+set param_card kr 0.1
+~~~
+{: .output}
+
+However, if you again take a look at the parameter card, the width of W' `wwp` is kept same.
+You can interactively see how the width value gets computed by doing `compute_widths wp+`.
+Check the parameter card again, and you would see that width has changed and also tells you the branching ratios to different channels.
+
+~~~
+#      PDG        Width
+DECAY  34   6.672601e-01
+#  BR             NDA  ID1    ID2   ...
+   2.506959e-01   2    2  -1 # 0.1672793598579319
+   2.479126e-01   2    6  -5 # 0.16542221070326676
+   2.379169e-01   2    4  -3 # 0.15875247762227632
+   8.356529e-02   2    12  -11 # 0.05575978661997229
+   8.356529e-02   2    14  -13 # 0.05575978638653866
+   8.356519e-02   2    16  -15 # 0.05575972059211703
+   1.277883e-02   2    2  -3 # 0.008526805639865994
+~~~
+{: .output}
+
+Instead of doing interactive width computation, you can do `set param_card wwp auto`.
+Then instead of first computing the widths, MadGraph will calculate the widths on-the-fly while generating events (but results will be identical).
+
+Proceed by hitting `0` and see how much cross section it gives you when hypothetically the W' boson exists and decays to the electron channel, assuming mass 2000GeV with right handed coupling 0.1.
+
+~~~
+  === Results Summary for run: run_01 tag: tag_1 ===
+
+     Cross-section :   0.001016 +- 1.447e-06 pb
+     Nb of events :  10000
+~~~
+{: .output}
+
+> ## How can we check the cross section when mass is 2000GeV with right handed coupling 1.0?
+>
+>
+> > ## Solution
+> > Repeat the exercise above but this time 
+> > ~~~
+> > set param_card mwp 2000
+> > set param_card kr 1.0
+> > ~~~
+> > {: .output}
+> > And most importantly, do not forget to compute the width by adding :
+> > ~~~
+> > set param_card wwp auto
+> > ~~~
+> > {: .output}
+> >
+> > Then you will get the following result.
+> > ~~~
+> >   === Results Summary for run: run_01 tag: tag_1 ===
+> >
+> >     Cross-section :   0.1045 +- 0.0001681 pb
+> >     Nb of events :  10000
+> > ~~~
+> > {: .output}
+> > 
+> {: .solution}
+> ## How much did the cross section increase compared to the scenario when mass is 2000GeV with right handed coupling 0.1?
+>
+> How many interactions did the W' boson get involved in?
+> > ## Solution
+> > One vertex when producing it, another vertex when it decays to electron channel.
+> > Thus two interactions (1./0.1) = 10 gets squared and thus result in 100 times larger cross section.
+> > 
+{: .challenge}
+
 
