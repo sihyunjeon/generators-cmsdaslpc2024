@@ -367,9 +367,9 @@ Another way to generate multiple Feynman diagrams is by using `add process` as b
 
 ~~~
 import model sm
-generate p p > z, z > e+ e-
-add process p p > z, z > mu+ mu-
-add process p p > z, z > ta+ ta-
+generate p p > e+ e-
+add process p p > mu+ mu-
+add process p p > ta+ ta-
 ~~~
 {: .output}
 
