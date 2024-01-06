@@ -41,13 +41,17 @@ cd MG5_aMC_v2_9_18
 {: .source}
 
 As for the second step of tutorial, we will learn how "gridpacks" are how produced using MadGraph.
-To do this we need to clone the CMS genproductions repository.
+To do this we need to clone the lite version genproductions repository.
 ~~~bash
 mkdir -p ${GENTUTPATH}/gridpack-tut/
 cd ${GENTUTPATH}/gridpack-tut/
-git clone --depth 1 https://github.com/cms-sw/genproductions.git
+git clone https://github.com/sihyunjeon/genproductions_lite genproductions
 ~~~
 {: .source}
+
+The full version genproductions is in (link)[https://github.com/cms-sw/genproductions].
+Remember that we are using the lite version just in order to fetch the necessary files.
+For up-to-date and official CMS usages, use the link above instead.
 
 Return back to the home path to start with standalone tutorial.
 ~~~bash
