@@ -1,5 +1,5 @@
 ---
-title: "1 - Introduction"
+title: "1 - Matrix Element Generator"
 teaching: 20
 exercises: 40
 questions:
