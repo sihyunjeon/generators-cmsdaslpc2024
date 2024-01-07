@@ -164,7 +164,7 @@ It first prints out the LHE information as we saw directly in the LHE file.
      6         11  e-                  23     3     4     0     0     0     0    -30.176     10.240     53.933     62.644      0.001
                                    Charge sum:  0.000           Momentum sum:      0.000      0.000     29.140    103.019     98.811
 ~~~
-{:. output}
+{: .output}
 
 Starts the parton shower on top of the given LHE event.
 See how much more information gets printed out.
