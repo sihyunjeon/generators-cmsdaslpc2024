@@ -244,6 +244,7 @@ As mentioned above, `mll50` in the output directory name stands for dilepton mas
 > > ~~~
 > > set run_card mmll 50
 > > ~~~
+> > {: .output}
 > {: .solution}
 {: .challenge}
 
@@ -261,6 +262,7 @@ After you verified the desired dilepton mass cut is given, let's really start th
 > >     Cross-section :   1584 +- 1.159 pb
 > >     Nb of events :  10000
 > > ~~~
+> > {: .output}
 > {: .solution}
 {: .challenge}
 
@@ -412,9 +414,7 @@ Try this again :
 >
 > > ## Solution
 > >
-> > ~~~
 > > Cross sections get larger as we loosen the cuts drastically (we will later see this through a histogram).
-> > ~~~
 > {: .solution}
 {: .challenge}
 
@@ -437,19 +437,15 @@ python3 lhe-root-plotter.py
 >
 > > ## Solution
 > >
-> > ~~~
 > > Transverse momentum peaks at 0 because the sum of intial quark's momentum only lies in z-axis direction.
 > > How do we acquire transversal direction momentum of the Z boson?
-> > ~~~
 > {: .solution}
 > 
 > What are the two peaks in the mass distribution?
 > > ## Solution
 > >
-> > ~~~
 > > Two peaks represent photon and Z boson.
 > > What will happen if we remove the cut on dilepton mass ('set mmll 0')?
-> > ~~~
 > >
 > {: .solution}
 {: .challenge}
