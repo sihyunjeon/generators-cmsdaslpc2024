@@ -654,7 +654,7 @@ INFO: Process b~ b > e+ e- added to mirror process b b~ > e+ e-
 Total: 5 processes with 10 diagrams
 output drellyan-mll50-5fs
 ~~~
-{:. output}
+{: .output}
 
 Now you would get the following, somewhat increased cross section 1903pb compared to the previous run 1836pb.
 ~~~
@@ -663,7 +663,7 @@ Now you would get the following, somewhat increased cross section 1903pb compare
      Cross-section :   1903 +- 6.669 pb
      Nb of events :  0
 ~~~
-{:. output}
+{: .output}
 
 > ## Why did the cross section change?
 >
