@@ -1,19 +1,18 @@
 ---
-title: "2 - Particle Level"
+title: "2 - Parton Shower Generator"
 teaching: 10
 exercises: 20
 questions:
 - "Why do we need parton shower?"
-- "How do we produce NanoGEN samples"
+- "How do we produce NanoGEN samples?"
 objectives:
 - "Perform parton shower with LHE file as an input"
 - "Perform parton shower with gridpack as an input"
-- "Inspect generator level information using NanoGEN files"
+- "Analyze generator level information using NanoGEN files"
 keypoints:
-- "Pythia8 is the main tool used for parton showering in CMS" #FIXME
+- "Pythia8 is the main tool used for parton showering in CMS"
 - "Events are not physical if it did not go through parton shower"
-- "CMS detector simulation is the slowest part of the simulation chain, NanoGEN is a convenient shortcut to do quick physics studies"
-- "Proper determination of the qcut is important for samples with additional partons included in the matrix element"
+- "Jet merging is a technique to avoid double countings of jet phase spaces in ME and PS calculations"
 ---
 
 # Creating particle level samples from LHE files
