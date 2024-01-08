@@ -51,7 +51,7 @@ One event for example is below, `u = 2` and `ubar = -2` quarks produce `z = 23` 
        11  1    3    3    0    0 +2.5416006610e+01 -3.5010752474e+01 +3.9850978037e+01 5.8820290983e+01 0.0000000000e+00 0.0000e+00 -1.0000e+00
 </event>
 ~~~
-{ .output}
+{: .output}
 
 By making the histograms, situation becomes more clearly understandable.
 
@@ -419,7 +419,8 @@ Proceed by hitting `0` and see how much cross section it gives you when hypothet
 > > ## Solution
 > > One vertex when producing it, another vertex when it decays to electron channel.
 > > Thus two interactions (1./0.1) = 10 gets squared and thus result in 100 times larger cross section.
-> > 
+> >
+> {: .solution}
 {: .challenge}
 
 
