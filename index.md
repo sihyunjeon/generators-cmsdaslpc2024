@@ -7,12 +7,7 @@ permalink: index.html  # Is the only page that doesn't follow the pattern /:path
 <img class="plain"  src="fig/event2.png" height=250>
 
 
-This exercise introduces Monte Carlo event generators and how they are used in high energy physics,
-focusing on the workflows used in CMS.
-
-The information and exercises are based on the [2022 CMSDAS](https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchoolLPC2022GeneratorsExercise#Task_1_Using_standalone_MG5) as well as the
-[Generator HATS 2021](https://twiki.cern.ch/twiki/bin/viewauth/CMS/GeneratorsHATSatLPC2021).
-It has been extended to cover new tools like [NanoGEN](https://twiki.cern.ch/twiki/bin/viewauth/CMS/NanoGen) and introduce generator-related systematic uncertainties.
+This exercise introduces Monte Carlo event generators and how they are used in high energy physics, focusing on the workflows used in CMS.
 
 <!-- this is an html comment -->
 
