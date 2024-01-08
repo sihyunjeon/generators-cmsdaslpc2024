@@ -9,9 +9,7 @@ objectives:
 - "Understand the role of MadSpin."
 - "Customize BSM parameters for gridpacks."
 keypoints:
-- "PDF uncertainties can be estimated from a set of different per-event weights. The method depends on the type of PDF set that is used (hessian, MC replicas)"
-- "Scale and alphaS variations are another source of uncertainty in the prediction of a simulated sample and can be used to estimate systematic uncertainties"
-- "We differentiate between total uncertainties and acceptance / shape uncertainties"
+- ""
 ---
 
 # Decay of resonant particles in MadGraph
