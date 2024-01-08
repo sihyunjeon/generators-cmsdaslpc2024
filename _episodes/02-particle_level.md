@@ -423,7 +423,5 @@ For `1`, jet merging procedure accepted 159 events out of 377 events.
 Note that the sum of `tried` is 1000 which was the given input with `-n 1000` at the LHE level.
 After jet merging has been done, events are discarded and the final cross section is reported `After filter: final cross section = 1.835e+03 +- 4.673e+01 pb` 1835pb which is dropped from the LHE given value `Before matching: total cross section = 2.932e+03 +- 2.090e+01 pb` 2932 pb.
 
-## (3) Analyzing generator level information (after parton shower)
-
 
 
